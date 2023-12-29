@@ -1,0 +1,80 @@
+import { LineEdit , Button, CheckBox, VerticalBox, HorizontalBox, ListView, StandardListView, GridBox} from "std-widgets.slint";
+import { IpV4, NetAddress, NetInterfaceItem, InterfaceUiItem, InterfaceItemCheck } from "interface-item.slint";
+
+export { InterfaceItemCheck }
+
+export global NetInterfaceStatus {
+    in-out property <[NetInterfaceItem]> all-interfaces; 
+    in-out property <int> selected-index;
+    in-out property <[StandardListViewItem]> saved-settings;
+}
+
+export component Main inherits Window {
+    preferred-width: 1280px;
+    preferred-height: 960px;
+
+    callback set-static(string, NetInterfaceItem);
+    callback set-dynamic(string);
+    callback refresh-adapters();
+        
+
+    HorizontalBox {
+        VerticalBox {
+            Text {text: "Current setting"; max-height: 20px;}
+            HorizontalBox { 
+                max-height: parent.height*0.35;
+                curr := InterfaceUiItem { }
+
+                VerticalBox {
+                    Button { text: "11";}
+                    Button { text: "11";}
+                    Button { text: "11";}
+                    Button { text: "11";}
+                }
+            }
+            // Rectangle {background: #f0f0f0;} 
+        }
+
+        HorizontalBox {
+            max-width: parent.width * 0.6;
+            GridBox {
+                Row {
+                    Text {text: "Adapters"; max-height: 20px; }
+                    Button {text: "Refresh"; clicked => { root.refresh-adapters(); }}
+                    show-setting := InterfaceUiItem { 
+                        rowspan: 4;
+                        read-only: true;
+                    }
+                }
+                Row {
+                    StandardListView { 
+                        colspan: 2;
+                        model: NetInterfaceStatus.saved-settings;
+                        current-item-changed(index) => {
+                            if (index>=0 && index < NetInterfaceStatus.all-interfaces.length) {
+                                show-setting.value = NetInterfaceStatus.all-interfaces[index];
+                            }
+                        }
+                    }
+                }
+                Row {
+                    Text {text: "Saved settings"; max-height: 20px; }
+                }
+                Row {
+                    StandardListView { 
+                        colspan: 2;
+                        model: NetInterfaceStatus.saved-settings;
+                        current-item-changed(index) => {
+                            if (index>=0 && index < NetInterfaceStatus.all-interfaces.length) {
+                                show-setting.value = NetInterfaceStatus.all-interfaces[index];
+                            }
+                        }
+                    }
+                }
+                Row{ Rectangle { background: #f0f0f0;} }
+            }
+        }
+    }
+
+    
+}

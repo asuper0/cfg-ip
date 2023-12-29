@@ -1,0 +1,233 @@
+import {ScrollView, LineEdit , Button, CheckBox, HorizontalBox, VerticalBox, Switch} from "std-widgets.slint";
+
+export struct IpV4 {
+    ip : string,
+}
+
+export struct NetAddress {
+    ip : IpV4,
+    netmask : IpV4,
+}
+
+export struct NetInterfaceItem {
+    index : int,
+    guid : string,
+    name : string,
+    is_up : bool,
+    address : [NetAddress],
+    gateway : [IpV4],
+    dns : [IpV4],
+    dhcp_server : IpV4,
+}
+
+export global InterfaceItemCheck {
+    callback check-ip(IpV4) -> bool;
+    callback check-address(NetAddress) -> bool;
+    
+}
+
+component IpItem {
+    in-out property <string> name : "IP";
+    in-out property <IpV4> ip : {ip:""};
+    in-out property <bool> read-only;
+    in-out property <length> font-size;
+    in-out property <bool> valid;
+    in-out property <length> name-width;
+
+    property <bool> state-sign : true;
+    property <float> warning-state: 0;
+
+    callback check-ip(IpV4) -> bool;
+    check-ip(t) => {
+        root.ip = t;
+        root.valid = !InterfaceItemCheck.check-ip(root.ip);
+
+        if (!root.valid) {
+            if (root.state-sign) {
+                root.warning-state = 0;
+            } else {
+                root.warning-state = 1;
+            }
+            root.state-sign = !root.state-sign;
+        }
+
+        root.valid
+    }
+    
+    animate warning-state {
+        duration: 3s;
+    }
+
+    // VerticalLayout {
+        // HorizontalLayout { 
+        //     Button { text: "valid";  clicked => { root.valid = !root.valid; }}
+        //     Button { text: "change"; clicked => {
+        //         if (root.state-sign) {
+        //             root.warning-state = 0;
+        //             root.state-sign = false;
+        //         } else {
+        //             root.warning-state = 1;
+        //             root.state-sign = true;
+        //         }
+        //     }}
+
+        //     if root.valid : Text { text: "valid: true , state \{Math.round(root.warning-state *100)/100}";}
+        //     if !root.valid : Text { text: "valid: false , state \{Math.round(root.warning-state *100)/100}";}
+        // }
+        HorizontalBox { 
+            // padding-left: 8px;
+            // padding-right: 8px;
+
+            alignment: stretch;
+            Text { text: root.name ; vertical-alignment: center; width: root.name-width; font-size: root.font-size;}
+            Rectangle {
+                // horizontal-stretch: 1;
+                le := LineEdit { 
+                    text: root.ip.ip; 
+                    x : 0;
+                    width: 100%;
+                    font-size: root.font-size;
+                    read-only: root.read-only;
+                    accepted(t) => { 
+                        check-ip({ip: t});
+                    }
+                }
+
+                warning-format-text := Text { text: "format error!"; color: #CC5555AB; x : le.width - self.width - 10px; }
+                states [
+                    normal when root.valid || (root.warning-state == 0 && root.state-sign ) || (root.warning-state== 1 && !root.state-sign): {
+                        warning-format-text.color : #CC555500;
+                    }
+                    warning when !root.valid && ((root.warning-state!= 0 && root.warning-state < 0.6 && root.state-sign)
+                        || (root.warning-state!= 1 && root.warning-state > 0.4 && !root.state-sign)) : {
+                        warning-format-text.color : #CC5555AB;
+
+                        out {
+                            animate warning-format-text.color { duration: 1.5s;}
+                        }
+                    }
+                    left when !root.valid && ((root.warning-state >= 0.6 && root.state-sign) || (root.warning-state<=0.4 && !root.state-sign)) : {
+                        warning-format-text.color : #CC555500;
+                    }
+                ]
+
+            }
+        }
+    // }
+}
+
+export component InterfaceUiItem inherits Rectangle{
+    in-out property <NetInterfaceItem> value;
+    in property <bool> read-only;
+    in-out property <bool> collapsed : false;
+
+    property <length> name-width : 48px;
+
+    Rectangle {
+        border-color: gray;
+        border-width: 2px;
+        border-radius: 5px;
+    }
+
+    states [
+        show-all when !collapsed: {
+            content.visible : true;
+            mini-name.visible : false;
+        }
+        show-name when collapsed: {
+            content.visible : false;
+            mini-name.visible : true;
+        }
+    ]
+    
+    ScrollView {
+        mini-name := HorizontalBox {
+            // spacing: 6px;
+            // padding-left: 6px;
+            // padding-right: 6px;
+            // padding-top: 8px;
+            Text { text: "name"; width: root.name-width; vertical-alignment: center;}
+            LineEdit { text: value.name; read-only: root.read-only; accepted => { root.collapsed = false;}}
+        }
+        content := VerticalBox {
+            // spacing: 6px;
+            // padding-left: 6px;
+            // padding-right: 6px;
+            // padding-top: 8px;
+
+            HorizontalBox {
+                Text { text: "index"; width: root.name-width; vertical-alignment: center;}
+                LineEdit { text: value.index; read-only: root.read-only;}
+            }
+
+            HorizontalBox {
+                Text { text: "guid"; width: root.name-width; vertical-alignment: center;}
+                LineEdit { text: value.guid; read-only: root.read-only;}
+            }
+
+            HorizontalBox {
+                Text { text: "name"; width: root.name-width; vertical-alignment: center;}
+                LineEdit { text: value.name; read-only: root.read-only; accepted => { root.collapsed = true; }}
+            }
+
+            Rectangle {
+                HorizontalBox {
+                    // Text { text: "state"; width: root.name-width; vertical-alignment: center;}
+                    Switch { text: "is up"; checked: value.is-up; }
+                    Switch { text: "dhcp on"; checked: value.dhcp-server.ip != ""; }
+                }
+                if read-only : TouchArea{}
+            }
+
+            Rectangle {
+                // Rectangle {
+                    border-color: gray;
+                    border-width: 2px;
+                    border-radius: 5px;
+                // }
+                VerticalBox {
+                    // spacing: 10px;
+                    // padding: 6px;
+                    Text { text: "address list";}
+                    for item in  root.value.address: HorizontalBox {
+                        IpItem {name: "ip"; ip: item.ip;}
+                        IpItem {name: "netmask"; ip: item.netmask;}
+                    }
+                }
+
+            }
+
+            Rectangle {
+                // Rectangle {
+                    border-color: gray;
+                    border-width: 2px;
+                    border-radius: 5px;
+                // }
+                VerticalBox {
+                    // padding: 6px;
+                    // spacing: 10px;
+                    Text { text: "gateway list";}
+                    for item in  root.value.gateway: HorizontalBox {
+                        IpItem {name: "ip"; ip: item;}
+                    }
+                }
+            }
+
+            Rectangle {
+                // Rectangle {
+                    border-color: gray;
+                    border-width: 2px;
+                    border-radius: 5px;
+                // }
+                VerticalBox {
+                    // spacing: 10px;
+                    // padding: 6px;
+                    Text { text: "dns list";}
+                    for item in  root.value.dns: HorizontalBox {
+                        IpItem {name: "ip"; ip: item;}
+                    }
+                }
+            }
+        }
+    }
+}
