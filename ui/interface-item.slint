@@ -1,4 +1,4 @@
-import {ScrollView, LineEdit , Button, CheckBox, HorizontalBox, VerticalBox, Switch} from "std-widgets.slint";
+import {ScrollView, LineEdit , Button, CheckBox, HorizontalBox, VerticalBox, Switch, TextEdit} from "std-widgets.slint";
 
 export struct IpV4 {
     ip : string,
@@ -23,7 +23,13 @@ export struct NetInterfaceItem {
 export global InterfaceItemCheck {
     callback check-ip(IpV4) -> bool;
     callback check-address(NetAddress) -> bool;
-    
+}
+
+export global NetItemUtils {
+    callback get-ip-list([NetAddress]) -> string;
+    callback get-netmask-list([NetAddress]) -> string;
+    callback get-gateway-list([IpV4]) -> string;
+    callback get-dns-list([IpV4]) -> string;
 }
 
 component IpItem {
@@ -123,12 +129,6 @@ export component InterfaceUiItem inherits Rectangle{
 
     property <length> name-width : 48px;
 
-    Rectangle {
-        border-color: gray;
-        border-width: 2px;
-        border-radius: 5px;
-    }
-
     states [
         show-all when !collapsed: {
             content.visible : true;
@@ -140,93 +140,209 @@ export component InterfaceUiItem inherits Rectangle{
         }
     ]
     
-    ScrollView {
-        mini-name := HorizontalBox {
-            // spacing: 6px;
-            // padding-left: 6px;
-            // padding-right: 6px;
-            // padding-top: 8px;
-            Text { text: "name"; width: root.name-width; vertical-alignment: center;}
-            LineEdit { text: value.name; read-only: root.read-only; accepted => { root.collapsed = false;}}
-        }
-        content := VerticalBox {
-            // spacing: 6px;
-            // padding-left: 6px;
-            // padding-right: 6px;
-            // padding-top: 8px;
+    Rectangle {
+        border-color: gray;
+        border-width: 2px;
+        border-radius: 5px;
+    }
 
-            HorizontalBox {
-                Text { text: "index"; width: root.name-width; vertical-alignment: center;}
-                LineEdit { text: value.index; read-only: root.read-only;}
-            }
+    VerticalLayout {
+        padding: 8px;
 
-            HorizontalBox {
-                Text { text: "guid"; width: root.name-width; vertical-alignment: center;}
-                LineEdit { text: value.guid; read-only: root.read-only;}
-            }
-
-            HorizontalBox {
+        ScrollView {
+            mini-name := HorizontalBox {
                 Text { text: "name"; width: root.name-width; vertical-alignment: center;}
-                LineEdit { text: value.name; read-only: root.read-only; accepted => { root.collapsed = true; }}
+                LineEdit { text: value.name; read-only: root.read-only; accepted => { root.collapsed = false;}}
             }
+            content := VerticalBox {
 
-            Rectangle {
                 HorizontalBox {
-                    // Text { text: "state"; width: root.name-width; vertical-alignment: center;}
-                    Switch { text: "is up"; checked: value.is-up; }
-                    Switch { text: "dhcp on"; checked: value.dhcp-server.ip != ""; }
+                    Text { text: "index"; width: root.name-width; vertical-alignment: center;}
+                    LineEdit { text: value.index; read-only: root.read-only;}
                 }
-                if read-only : TouchArea{}
-            }
 
-            Rectangle {
-                // Rectangle {
-                    border-color: gray;
-                    border-width: 2px;
-                    border-radius: 5px;
-                // }
-                VerticalBox {
-                    // spacing: 10px;
-                    // padding: 6px;
-                    Text { text: "address list";}
-                    for item in  root.value.address: HorizontalBox {
-                        IpItem {name: "ip"; ip: item.ip;}
-                        IpItem {name: "netmask"; ip: item.netmask;}
+                HorizontalBox {
+                    Text { text: "guid"; width: root.name-width; vertical-alignment: center;}
+                    LineEdit { text: value.guid; read-only: root.read-only;}
+                }
+
+                HorizontalBox {
+                    Text { text: "name"; width: root.name-width; vertical-alignment: center;}
+                    LineEdit { text: value.name; read-only: root.read-only; accepted => { root.collapsed = true; }}
+                }
+
+                Rectangle {
+                    HorizontalBox {
+                        // Text { text: "state"; width: root.name-width; vertical-alignment: center;}
+                        Switch { text: "is up"; checked: value.is-up; }
+                        Switch { text: "dhcp on"; checked: value.dhcp-server.ip != ""; }
+                    }
+                    if read-only : TouchArea{}
+                }
+
+                Rectangle {
+                    // Rectangle {
+                        border-color: gray;
+                        border-width: 2px;
+                        border-radius: 5px;
+                    // }
+                    VerticalBox {
+                        // spacing: 10px;
+                        // padding: 6px;
+                        Text { text: "address list";}
+                        for item in  root.value.address: HorizontalBox {
+                            IpItem {name: "ip"; ip: item.ip;}
+                            IpItem {name: "netmask"; ip: item.netmask;}
+                        }
+                    }
+
+                }
+
+                Rectangle {
+                    // Rectangle {
+                        border-color: gray;
+                        border-width: 2px;
+                        border-radius: 5px;
+                    // }
+                    VerticalBox {
+                        // padding: 6px;
+                        // spacing: 10px;
+                        Text { text: "gateway list";}
+                        for item in  root.value.gateway: HorizontalBox {
+                            IpItem {name: "ip"; ip: item;}
+                        }
                     }
                 }
 
-            }
+                Rectangle {
+                    // Rectangle {
+                        border-color: gray;
+                        border-width: 2px;
+                        border-radius: 5px;
+                    // }
+                    VerticalBox {
+                        // spacing: 10px;
+                        // padding: 6px;
+                        Text { text: "dns list";}
+                        for item in  root.value.dns: HorizontalBox {
+                            IpItem {name: "ip"; ip: item;}
+                        }
+                    }
+                }
 
-            Rectangle {
-                // Rectangle {
+                Rectangle {}
+            }
+        }
+    }
+}
+
+export component InterfaceEdit inherits Rectangle{
+    in-out property <NetInterfaceItem> value;
+    in-out property <bool> dhcp-on;
+
+    property <length> name-width : 48px;
+
+    public function select-item(item : NetInterfaceItem) 
+    {
+        value = item;
+
+        te-ip.text = NetItemUtils.get-ip-list(item.address);
+        te-netmask.text = NetItemUtils.get-netmask-list(item.address);
+        te-gateway.text = NetItemUtils.get-gateway-list(item.gateway);
+        te-dns.text = NetItemUtils.get-dns-list(item.dns);
+        root.dhcp-on = item.dhcp-server.ip != "";
+    }
+
+    Rectangle {
+        border-color: gray;
+        border-width: 2px;
+        border-radius: 5px;
+    }
+
+    VerticalLayout {
+        padding: 8px;
+
+        ScrollView {
+            VerticalBox {
+
+                HorizontalBox {
+                    Text { text: "index"; width: root.name-width; vertical-alignment: center;}
+                    LineEdit { text: value.index; read-only: true; }
+                }
+
+                HorizontalBox {
+                    Text { text: "guid"; width: root.name-width; vertical-alignment: center;}
+                    LineEdit { text: value.guid;  read-only: true;}
+                }
+
+                HorizontalBox {
+                    Text { text: "name"; width: root.name-width; vertical-alignment: center;}
+                    LineEdit { text: value.name;  read-only: true;}
+                }
+
+                Rectangle {
+                    HorizontalBox {
+                        sw-dhcp := Switch { text: "dhcp on"; checked: root.dhcp-on;}
+                    }
+                }
+
+                states [
+                    show-dhcp when sw-dhcp.checked : {
+                        ui-address.visible : true;
+                        ui-gateway.visible : true;
+                        ui-dns.visible : true;
+                        ui-space.visible : false;
+                    }
+                    show-static when !sw-dhcp.checked : {
+                        ui-address.visible : false;
+                        ui-gateway.visible : false;
+                        ui-dns.visible : false;
+                        ui-space.visible : true;
+                    }
+                ]
+                ui-address:= Rectangle {
                     border-color: gray;
                     border-width: 2px;
                     border-radius: 5px;
-                // }
-                VerticalBox {
-                    // padding: 6px;
-                    // spacing: 10px;
-                    Text { text: "gateway list";}
-                    for item in  root.value.gateway: HorizontalBox {
-                        IpItem {name: "ip"; ip: item;}
-                    }
-                }
-            }
 
-            Rectangle {
-                // Rectangle {
-                    border-color: gray;
-                    border-width: 2px;
-                    border-radius: 5px;
-                // }
-                VerticalBox {
-                    // spacing: 10px;
-                    // padding: 6px;
-                    Text { text: "dns list";}
-                    for item in  root.value.dns: HorizontalBox {
-                        IpItem {name: "ip"; ip: item;}
+                    VerticalBox {
+                        Text { text: "address list";}
+                        HorizontalBox {
+                            min-height: 64px;
+                            Text {text: "ip";}
+                            te-ip := TextEdit {}
+                            Text {text: "netmask";}
+                            te-netmask := TextEdit {}
+                        }
+                    }
+
+                }
+
+                ui-gateway := Rectangle {
+                    // Rectangle {
+                        border-color: gray;
+                        border-width: 2px;
+                        border-radius: 5px;
+                    // }
+                    VerticalBox {
+                        Text { text: "gateway list";}
+                        te-gateway := TextEdit {}
                     }
                 }
+
+                ui-dns := Rectangle {
+                    // Rectangle {
+                        border-color: gray;
+                        border-width: 2px;
+                        border-radius: 5px;
+                    // }
+                    VerticalBox {
+                        Text { text: "dns list";}
+                        te-dns := TextEdit {}
+                    }
+                }
+
+                ui-space := Rectangle{ }
             }
         }
     }

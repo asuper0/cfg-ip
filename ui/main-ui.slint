@@ -1,77 +1,83 @@
 import { LineEdit , Button, CheckBox, VerticalBox, HorizontalBox, ListView, StandardListView, GridBox} from "std-widgets.slint";
-import { IpV4, NetAddress, NetInterfaceItem, InterfaceUiItem, InterfaceItemCheck } from "interface-item.slint";
+import { IpV4, NetAddress, NetInterfaceItem, InterfaceUiItem, InterfaceItemCheck, InterfaceEdit, NetItemUtils } from "interface-item.slint";
 
-export { InterfaceItemCheck }
+export { InterfaceItemCheck, NetItemUtils }
 
 export global NetInterfaceStatus {
-    in-out property <[NetInterfaceItem]> all-interfaces; 
+    in-out property <[NetInterfaceItem]> interface-infos; 
+    in-out property <[StandardListViewItem]> interface-names;
     in-out property <int> selected-index;
-    in-out property <[StandardListViewItem]> saved-settings;
+    in-out property <[NetInterfaceItem]> saved-settings; 
+    in-out property <[StandardListViewItem]> saved-names;
 }
 
 export component Main inherits Window {
     preferred-width: 1280px;
-    preferred-height: 960px;
+    preferred-height: 720px;
 
     callback set-static(string, NetInterfaceItem);
     callback set-dynamic(string);
     callback refresh-adapters();
-        
+    callback load-selected(NetInterfaceItem);
+    callback apply-config(NetInterfaceItem);
 
     HorizontalBox {
         VerticalBox {
-            Text {text: "Current setting"; max-height: 20px;}
-            HorizontalBox { 
-                max-height: parent.height*0.35;
-                curr := InterfaceUiItem { }
-
-                VerticalBox {
-                    Button { text: "11";}
-                    Button { text: "11";}
-                    Button { text: "11";}
-                    Button { text: "11";}
-                }
+            Text {text: "Edit interface"; max-height: 20px;}
+            HorizontalBox {
+                Button {text: "Load selected"; clicked => { curr.select-item(show-setting.value); }}
+                Button {text: "Apply"; clicked => {}}
+                Button {text: "Save"; clicked => {}}
             }
-            // Rectangle {background: #f0f0f0;} 
+
+            curr := InterfaceEdit { }
         }
 
         HorizontalBox {
             max-width: parent.width * 0.6;
             GridBox {
                 Row {
-                    Text {text: "Adapters"; max-height: 20px; }
+                    Text {text: "Adapters"; max-height: 20px; vertical-alignment: center;}
                     Button {text: "Refresh"; clicked => { root.refresh-adapters(); }}
-                    show-setting := InterfaceUiItem { 
-                        rowspan: 4;
-                        read-only: true;
-                    }
+                    Text {text: "Selected Item"; vertical-alignment: center;}
+                    le-selected-item := LineEdit { read-only: true; }
                 }
                 Row {
                     StandardListView { 
                         colspan: 2;
-                        model: NetInterfaceStatus.saved-settings;
+                        model: NetInterfaceStatus.interface-names;
                         current-item-changed(index) => {
-                            if (index>=0 && index < NetInterfaceStatus.all-interfaces.length) {
-                                show-setting.value = NetInterfaceStatus.all-interfaces[index];
+                            if (index>=0 && index < NetInterfaceStatus.interface-infos.length) {
+                                show-setting.value = NetInterfaceStatus.interface-infos[index];
+                                le-selected-item.text = "Adapter : " + show-setting.value.name;
                             }
                         }
                     }
                 }
                 Row {
-                    Text {text: "Saved settings"; max-height: 20px; }
+                    Text {text: "Saved settings"; max-height: 20px; vertical-alignment: center;}
+                    Button {text: "Remove"; clicked => { }}
                 }
                 Row {
                     StandardListView { 
                         colspan: 2;
-                        model: NetInterfaceStatus.saved-settings;
+                        model: NetInterfaceStatus.saved-names;
                         current-item-changed(index) => {
-                            if (index>=0 && index < NetInterfaceStatus.all-interfaces.length) {
-                                show-setting.value = NetInterfaceStatus.all-interfaces[index];
+                            if (index>=0 && index < NetInterfaceStatus.saved-settings.length) {
+                                show-setting.value = NetInterfaceStatus.saved-settings[index];
+                                le-selected-item.text = "Saved : " + show-setting.value.name;
                             }
                         }
                     }
                 }
-                Row{ Rectangle { background: #f0f0f0;} }
+
+                show-setting := InterfaceUiItem { 
+                    row: 1;
+                    col: 2;
+                    rowspan: 4;
+                    colspan: 2;
+                    read-only: true;
+                }
             }
         }
     }

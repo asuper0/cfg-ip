@@ -1,8 +1,10 @@
-use crate::ui::generated_code::{InterfaceItemCheck, IpV4, Main, NetAddress, NetInterfaceItem};
+use crate::ui::generated_code::{
+    InterfaceItemCheck, IpV4, Main, NetAddress, NetInterfaceItem, NetItemUtils,
+};
 use itertools::{self, Itertools};
 use net_adapters::adapter::{Address, Nic};
 // use slint::SharedString;
-use slint::{ComponentHandle, ModelRc, VecModel};
+use slint::{ComponentHandle, ModelRc, VecModel, Model};
 use std::net::{IpAddr, Ipv4Addr};
 use std::rc::Rc;
 use std::str::FromStr;
@@ -67,4 +69,38 @@ pub fn set_ui_checker(window: &Main) {
     window
         .global::<InterfaceItemCheck>()
         .on_check_ip(move |ip| Ipv4Addr::from_str(ip.ip.as_str()).is_ok());
+}
+
+pub fn set_item_convert(window: &Main) {
+    window.global::<NetItemUtils>().on_get_ip_list({
+        move |net_address| {
+            let combined  = net_address.iter().map(|item| item.ip.ip.to_string()).join("\n");
+            combined.into()
+        }
+    });
+
+    window.global::<NetItemUtils>().on_get_netmask_list({
+        move |net_address| {
+            let combined  = net_address.iter().map(|item| item.netmask.ip.to_string()).join("\n");
+            combined.into()
+        }
+    });
+
+    window.global::<NetItemUtils>().on_get_gateway_list({
+        move |net_address| {
+            let combined  = net_address.iter().map(|item| item.ip.to_string()).join("\n");
+            combined.into()
+        }
+    });
+
+    window.global::<NetItemUtils>().on_get_dns_list({
+        move |net_address| {
+            let combined  = net_address.iter().map(|item| item.ip.to_string()).join("\n");
+            combined.into()
+        }
+    });
+
+    // window
+    //     .global::<NetItemUtils>()
+    //     .on_check_ip(move |ip| Ipv4Addr::from_str(ip.ip.as_str()).is_ok());
 }
