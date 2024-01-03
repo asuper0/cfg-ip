@@ -71,6 +71,9 @@ pub fn set_ui_checker(window: &Main) {
         .on_check_ip(move |ip| Ipv4Addr::from_str(ip.ip.as_str()).is_ok());
 }
 
+
+/// set convert callback for slint,
+/// to convert `ModelRc<T>` to line sperated string
 pub fn set_item_convert(window: &Main) {
     window.global::<NetItemUtils>().on_get_ip_list({
         move |net_address| {
@@ -111,14 +114,10 @@ pub fn set_item_convert(window: &Main) {
             combined.into()
         }
     });
-
-    // window
-    //     .global::<NetItemUtils>()
-    //     .on_check_ip(move |ip| Ipv4Addr::from_str(ip.ip.as_str()).is_ok());
 }
 
 pub fn convert_ip_items(texts: &VecModel<SharedString>) -> anyhow::Result<Vec<Vec<IpAddr>>> {
-    // texts内容： ip, netmask, gateway, dns
+    // texts format： ip, netmask, gateway, dns
     assert_eq!(texts.row_count(), 4);
     let (ip, netmask, gateway, dns) = texts
         .iter()
