@@ -27,7 +27,7 @@ fn test_cli() {
     let (tx, rx) = std::sync::mpsc::channel();
     if set_dynamic {
         println!("set dynamic ip on adapter {}", nic.name());
-        match cfg_ip::set_ip::set_dynamic_ip(nic, tx) {
+        match cfg_ip::set_ip::set_dynamic_ip(nic.name(), tx) {
             Ok(()) => println!("set ok"),
             Err(err) => println!("failed: {err}"),
         };
@@ -53,7 +53,7 @@ fn test_cli() {
             "222.246.129.81".parse().unwrap(),
         ];
 
-        match cfg_ip::set_ip::set_static_ip(nic, &address, &gateway, &dns, tx) {
+        match cfg_ip::set_ip::set_static_ip(nic.name(), &address, &gateway, &dns, tx) {
             Ok(()) => println!("set ok"),
             Err(err) => println!("failed: {err}"),
         };

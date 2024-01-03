@@ -19,15 +19,23 @@ export component Main inherits Window {
     callback set-dynamic(string);
     callback refresh-adapters();
     callback load-selected(NetInterfaceItem);
-    callback apply-config(NetInterfaceItem);
+    callback remove-selected(int);
+    callback apply-config(NetInterfaceItem, bool, [string]);
+    callback save-config(NetInterfaceItem, bool, [string]);
 
     HorizontalBox {
         VerticalBox {
             Text {text: "Edit interface"; max-height: 20px;}
             HorizontalBox {
-                Button {text: "Load selected"; clicked => { curr.select-item(show-setting.value); }}
-                Button {text: "Apply"; clicked => {}}
-                Button {text: "Save"; clicked => {}}
+                Button {text: "Apply"; clicked => {
+                    apply-config(curr.value, curr.dhcp-on, curr.get-items());
+                }}
+                Button {text: "Save"; clicked => {
+                    save-config(curr.value, curr.dhcp-on, curr.get-items());
+                }}
+                Button {text: "Load selected"; clicked => {
+                    curr.select-item(show-setting.value);
+                }}
             }
 
             curr := InterfaceEdit { }
@@ -55,11 +63,22 @@ export component Main inherits Window {
                     }
                 }
                 Row {
-                    Text {text: "Saved settings"; max-height: 20px; vertical-alignment: center;}
-                    Button {text: "Remove"; clicked => { }}
+                    Rectangle {
+                        colspan: 2;
+                        height: 3px;
+                        background: @linear-gradient(90deg, #e99 0%, #9e9 50%, #99e 100%);
+                    }
                 }
                 Row {
-                    StandardListView { 
+                    Text {text: "Saved settings"; max-height: 20px; vertical-alignment: center;}
+                    Button {text: "Remove"; clicked => {
+                        if (listview-saved.current-item >= 0) {
+                            root.remove-selected(listview-saved.current-item);
+                        }
+                    }}
+                }
+                Row {
+                    listview-saved := StandardListView { 
                         colspan: 2;
                         model: NetInterfaceStatus.saved-names;
                         current-item-changed(index) => {

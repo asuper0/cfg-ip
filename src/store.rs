@@ -1,9 +1,10 @@
+use itertools::Itertools;
 use net_adapters::adapter::Nic;
 use serde_derive::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[derive(Debug, Serialize, Deserialize, Default)]
-struct IpConfigList {
+#[derive(Debug, Serialize, Deserialize, Default, Clone)]
+pub struct IpConfigList {
     inner: HashMap<String, Vec<Nic>>,
 }
 
@@ -51,22 +52,44 @@ impl IpConfigList {
         None
     }
 
-    pub fn insert(&mut self, nic: Nic) {
+    pub fn remove_at(&mut self, index: i32) -> Option<Nic> {
+        assert!(index >= 0);
+        if let Some(nic) = self.inner.values().flatten().nth(index as usize) {
+            let nic = nic.clone();
+            self.remove(&nic)
+        } else {
+            None
+        }
+    }
+
+    pub fn insert(&mut self, nic: Nic) -> bool {
         let entry = self.inner.entry(nic.guid().to_string());
         match entry {
             std::collections::hash_map::Entry::Occupied(mut entry) => {
-                entry
+                if entry
                     .get_mut()
                     .iter_mut()
                     .find(|item| nic.eq(item))
-                    .and_then(|it| {
-                        *it = nic;
-                        Some(())
-                    });
+                    .is_none()
+                {
+                    entry.get_mut().push(nic);
+                    true
+                } else {
+                    false
+                }
             }
             std::collections::hash_map::Entry::Vacant(v) => {
                 v.insert(vec![nic]);
+                true
             }
-        };
+        }
+    }
+
+    pub fn get_list(&self) -> Vec<Nic> {
+        self.inner
+            .values()
+            .flatten()
+            .map(|item| item.clone())
+            .collect_vec()
     }
 }

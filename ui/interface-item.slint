@@ -238,7 +238,16 @@ export component InterfaceUiItem inherits Rectangle{
 
 export component InterfaceEdit inherits Rectangle{
     in-out property <NetInterfaceItem> value;
-    in-out property <bool> dhcp-on;
+    in-out property <bool> dhcp-on <=> sw-dhcp.checked;
+
+    public function get-items() -> [string] {
+        [
+            te-ip.text,
+            te-netmask.text,
+            te-gateway.text,
+            te-dns.text,
+        ]
+    }
 
     property <length> name-width : 48px;
 
@@ -282,22 +291,22 @@ export component InterfaceEdit inherits Rectangle{
 
                 Rectangle {
                     HorizontalBox {
-                        sw-dhcp := Switch { text: "dhcp on"; checked: root.dhcp-on;}
+                        sw-dhcp := Switch { text: "dhcp on"; }
                     }
                 }
 
                 states [
                     show-dhcp when sw-dhcp.checked : {
-                        ui-address.visible : true;
-                        ui-gateway.visible : true;
-                        ui-dns.visible : true;
-                        ui-space.visible : false;
-                    }
-                    show-static when !sw-dhcp.checked : {
                         ui-address.visible : false;
                         ui-gateway.visible : false;
                         ui-dns.visible : false;
                         ui-space.visible : true;
+                    }
+                    show-static when !sw-dhcp.checked : {
+                        ui-address.visible : true;
+                        ui-gateway.visible : true;
+                        ui-dns.visible : true;
+                        ui-space.visible : false;
                     }
                 ]
                 ui-address:= Rectangle {

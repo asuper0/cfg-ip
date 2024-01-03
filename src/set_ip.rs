@@ -3,14 +3,14 @@ use encoding::{DecoderTrap, Encoding};
 
 use std::process::{Command, Stdio};
 
-use net_adapters::adapter::{Address, Nic};
 use anyhow::Result;
+use net_adapters::adapter::Address;
 use std::net::IpAddr;
 use std::sync::mpsc;
 
 pub fn set_dynamic_ip(
-    nic: &Nic,
-    output_tx: mpsc::Sender<(usize, &'static str, String)>,
+    nic_name: &str,
+    output_tx: mpsc::Sender<(usize, String, String)>,
 ) -> Result<()> {
     // netsh interface ip set address name="WLAN" source=dhcp
     // netsh interface ip set dns name="WLAN" source=dhcp
@@ -20,7 +20,7 @@ pub fn set_dynamic_ip(
         "ip",
         "set",
         "address",
-        &format!("name=\"{}\"", nic.name()),
+        &format!("name=\"{}\"", nic_name),
         "source=dhcp",
     ]);
 
@@ -30,7 +30,7 @@ pub fn set_dynamic_ip(
         "ip",
         "set",
         "dns",
-        &format!("name=\"{}\"", nic.name()),
+        &format!("name=\"{}\"", nic_name),
         "source=dhcp",
     ]);
 
@@ -41,11 +41,11 @@ pub fn set_dynamic_ip(
 }
 
 pub fn set_static_ip(
-    nic: &Nic,
+    nic_name: &str,
     address: &[Address],
     gateway: &[IpAddr],
     dns: &[IpAddr],
-    output_tx: mpsc::Sender<(usize, &'static str, String)>,
+    output_tx: mpsc::Sender<(usize, String, String)>,
 ) -> Result<()> {
     // Netsh interface IP set address "WLAN" Static 10.8.4.159 255.255.255.0 10.8.4.1
     // netsh interface ipv4 add address name="WLAN" addr=192.168.5.16 mask=255.255.255.0
@@ -56,7 +56,7 @@ pub fn set_static_ip(
 
     assert!(!address.is_empty());
 
-    let name_field = format!("name=\"{}\"", nic.name());
+    let name_field = format!("name=\"{}\"", nic_name);
     let mut cmd_set_static = Command::new("netsh.exe");
     let arg1 = vec![
         "interface".to_string(),
@@ -91,7 +91,7 @@ pub fn set_static_ip(
     }
 
     let mut cmd_set_gateway = Vec::with_capacity(gateway.len());
-    for  gateway in gateway {
+    for gateway in gateway {
         let mut cmd = Command::new("netsh.exe");
 
         // Netsh interface IP add gateway "WLAN" 114.114.114.114
@@ -109,7 +109,7 @@ pub fn set_static_ip(
     }
 
     let mut cmd_set_dns = Vec::with_capacity(dns.len());
-    for  dns in dns{
+    for dns in dns {
         let mut cmd = Command::new("netsh.exe");
 
         // Netsh interface IP add dns "WLAN" 114.114.114.114
@@ -142,31 +142,36 @@ fn format_ip_address(ip: &IpAddr) -> String {
     }
 }
 
+#[allow(unused)]
 fn shell_batch(
     commands: Vec<(&'static str, Command)>,
-    output_tx: mpsc::Sender<(usize, &'static str, String)>,
+    output_tx: mpsc::Sender<(usize, String, String)>,
 ) -> Result<()> {
     std::thread::spawn(move || {
+        #[allow(unused)]
         for (i, (desc, mut cmd)) in commands.into_iter().enumerate() {
             cmd.stdout(Stdio::piped());
             match cmd.output() {
+                #[allow(unused)]
                 Ok(output) => {
                     let msg = GB18030
                         .decode(&output.stdout, DecoderTrap::Strict)
                         .expect("format std output failed");
-                    // let msg =                 String::from_utf8(output.stdout).expect("format std output failed");
-                    // let msg = OsStr::
-                    if output_tx.send((i, desc, msg)).is_err() {
+                    if output_tx
+                        .send((i, format!("{desc} {:?}", cmd), msg))
+                        .is_err()
+                    {
                         break;
                     }
                 }
+                #[allow(unused)]
                 Err(err) => {
-                    let _ = output_tx.send((i, desc, err.to_string()));
+                    let _ = output_tx.send((i, format!("{desc} {:?}", cmd), err.to_string()));
                     break;
-                    // return Err(anyhow::Error::new(err));
                 }
             };
         }
+        let _ = output_tx.send((0, "finish".to_string(), String::new()));
     });
 
     Ok(())
