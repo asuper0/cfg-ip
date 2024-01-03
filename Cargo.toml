@@ -7,12 +7,12 @@ build = "build.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tokio = {version ="1.29.1", features = ["full"]}
+tokio = { version = "1.29.1", features = ["full"] }
 tokio-stream = "0.1.14"
 futures-util = "0.3.8"
 futures-core = "0.3.28"
 # tracing-subscriber = "0.3.17"
-net-adapters = {path = "D:/Code/rust/lib-asuper/net-adapters"}
+net-adapters = { git = "https://github.com/asuper0/net-adapters", rev = "1404601" }
 anyhow = "1.0.75"
 async-stream = "0.3.5"
 encoding = "0.2.33"
