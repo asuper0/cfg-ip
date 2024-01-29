@@ -15,6 +15,4 @@ If you saved some items in step 4, then you can choose and select them, like ste
 
 ## Notice
 
-Currently `Slint` has a problem, the message box would not show until you press some key, `Alt` for example. So after click "Apple" button, just press `Alt` to continue.
-
 The app use `netsh` command tool to do the config, you would see some console windows show and disappear since I don't hide them.
