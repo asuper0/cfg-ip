@@ -1,5 +1,5 @@
-use encoding::all::GB18030;
-use encoding::{DecoderTrap, Encoding};
+#[cfg(debug_assertions)]
+use encoding::{all::GB18030, DecoderTrap, Encoding};
 
 use std::io::Write;
 use std::process::{Command, Stdio};
@@ -147,10 +147,10 @@ fn shell_batch(commands: Vec<String>) -> Result<String> {
     }
     stdin.write_all("exit\n".as_bytes())?;
 
-    let output = child.wait_with_output()?;
+    let _output = child.wait_with_output()?;
     #[cfg(debug_assertions)]
     let msg = GB18030
-        .decode(&output.stdout, DecoderTrap::Strict)
+        .decode(&_output.stdout, DecoderTrap::Strict)
         .expect("format std output failed");
     #[cfg(not(debug_assertions))]
     let msg = "".to_string();
