@@ -223,6 +223,16 @@ fn refresh_adapters(window: &Main) {
     window
         .global::<NetInterfaceStatus>()
         .set_interface_names(list_model);
+
+    if window.get_select_system_adapter() {
+        let selected_guid = window.get_selected_guid();
+        if let Some((index, _)) = adapters
+            .iter()
+            .find_position(|item| *item.guid() == *selected_guid.as_str())
+        {
+            window.invoke_select_system(index as i32);
+        }
+    }
 }
 
 fn load_saved_items(window: slint::Weak<Main>, cfg: Arc<Mutex<MyConfig>>) {
@@ -239,9 +249,18 @@ fn load_saved_items(window: slint::Weak<Main>, cfg: Arc<Mutex<MyConfig>>) {
         .global::<NetInterfaceStatus>()
         .set_saved_settings(model);
 
+    let dhcp_text_fn = |dhcp_on| match dhcp_on {
+        true => "dhcp",
+        false => "static",
+    };
+
     let list_items = saved_items
         .iter()
-        .map(|item| slint::StandardListViewItem::from(item.name()))
+        .map(|item| {
+            slint::StandardListViewItem::from(
+                &format!("{} - {}", item.name(), dhcp_text_fn(item.dhcp_on()))[..],
+            )
+        })
         .collect_vec();
     let list_model = utils::create_model_vec(list_items);
     window

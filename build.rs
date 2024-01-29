@@ -1,7 +1,4 @@
 #[cfg(target_os = "windows")]
-use winres;
-
-#[cfg(target_os = "windows")]
 fn require_admin() {
     use std::io::Write;
     // only build the resource for release builds
@@ -20,7 +17,6 @@ fn require_admin() {
 "#;
 
         let mut res = winres::WindowsResource::new();
-        // res.set_icon("resources\\ico\\fiscalidade_server.ico")
         res.set_manifest(manifest);
 
         match res.compile() {

@@ -15,6 +15,13 @@ export component Main inherits Window {
     preferred-width: 1280px;
     preferred-height: 720px;
 
+    in-out property <bool> select-system-adapter : false;
+    out property <string> selected_guid;
+
+    public function select-system(index:int) {
+        listview-system.set-current-item(index);
+    }
+
     callback set-static(string, NetInterfaceItem);
     callback set-dynamic(string);
     callback refresh-adapters();
@@ -53,12 +60,14 @@ export component Main inherits Window {
                     le-selected-item := LineEdit { read-only: true; }
                 }
                 Row {
-                    StandardListView { 
+                    listview-system := StandardListView { 
                         colspan: 2;
                         model: NetInterfaceStatus.interface-names;
                         current-item-changed(index) => {
                             if (index>=0 && index < NetInterfaceStatus.interface-infos.length) {
                                 show-setting.value = NetInterfaceStatus.interface-infos[index];
+                                root.select-system-adapter = true;
+                                root.selected-guid = show-setting.value.guid;
                                 le-selected-item.text = "Adapter : " + show-setting.value.name;
                             }
                         }
@@ -86,6 +95,8 @@ export component Main inherits Window {
                         current-item-changed(index) => {
                             if (index>=0 && index < NetInterfaceStatus.saved-settings.length) {
                                 show-setting.value = NetInterfaceStatus.saved-settings[index];
+                                root.select-system-adapter = false;
+                                root.selected-guid = show-setting.value.guid;
                                 le-selected-item.text = "Saved : " + show-setting.value.name;
                             }
                         }
