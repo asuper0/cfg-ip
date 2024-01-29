@@ -187,6 +187,9 @@ fn set_save_config(window: &Main, cfg: Arc<Mutex<MyConfig>>) {
                 if is_saved {
                     load_saved_items(weak.clone(), cfg.clone());
                 }
+
+                // just for test bug
+                show_message_box(&window, "test title", "save ok");
             }
         }
     });
