@@ -31,7 +31,6 @@ fn require_admin() {
             Ok(_) => {}
         }
     }
-
 }
 
 fn main() {

@@ -18,6 +18,7 @@ export struct NetInterfaceItem {
     gateway : [IpV4],
     dns : [IpV4],
     dhcp_server : IpV4,
+    dhcp_on : bool,
 }
 
 export global InterfaceItemCheck {
@@ -175,7 +176,7 @@ export component InterfaceUiItem inherits Rectangle{
                     HorizontalBox {
                         // Text { text: "state"; width: root.name-width; vertical-alignment: center;}
                         Switch { text: "is up"; checked: value.is-up; }
-                        Switch { text: "dhcp on"; checked: value.dhcp-server.ip != ""; }
+                        Switch { text: "dhcp on"; checked: value.dhcp-on; }
                     }
                     if read-only : TouchArea{}
                 }
@@ -259,7 +260,7 @@ export component InterfaceEdit inherits Rectangle{
         te-netmask.text = NetItemUtils.get-netmask-list(item.address);
         te-gateway.text = NetItemUtils.get-gateway-list(item.gateway);
         te-dns.text = NetItemUtils.get-dns-list(item.dns);
-        root.dhcp-on = item.dhcp-server.ip != "";
+        root.dhcp-on = item.dhcp-on;
     }
 
     Rectangle {

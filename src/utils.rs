@@ -55,6 +55,7 @@ pub fn convert(nic: &Nic) -> NetInterfaceItem {
             Some(s) => convert_ip(s),
             None => IpV4::default(),
         },
+        dhcp_on: nic.dhcp_on(),
     }
 }
 
@@ -70,7 +71,6 @@ pub fn set_ui_checker(window: &Main) {
         .global::<InterfaceItemCheck>()
         .on_check_ip(move |ip| Ipv4Addr::from_str(ip.ip.as_str()).is_ok());
 }
-
 
 /// set convert callback for slint,
 /// to convert `ModelRc<T>` to line sperated string
