@@ -55,7 +55,7 @@ fn set_remove_selected(window: &Main, cfg: Arc<Mutex<MyConfig>>) {
             if index < 0 {
                 return;
             }
-            if {
+            let is_removed = {
                 let mut cfg = cfg.lock().unwrap();
                 let is_removed = cfg.items.remove_at(index).is_some();
                 if is_removed {
@@ -63,7 +63,8 @@ fn set_remove_selected(window: &Main, cfg: Arc<Mutex<MyConfig>>) {
                         .expect("Save to file saved_items.yml failed");
                 }
                 is_removed
-            } {
+            };
+            if is_removed {
                 load_saved_items(weak.clone(), cfg.clone());
             }
         }
@@ -79,7 +80,7 @@ fn set_apply_config(window: &Main) {
                     if let Err(err) = cfg_ip::set_ip::set_dynamic_ip(&_item.name, tx) {
                         rfd::MessageDialog::new()
                             .set_title("Warning")
-                            .set_description(&err.to_string())
+                            .set_description(err.to_string())
                             .show();
                         return;
                     }
@@ -95,7 +96,7 @@ fn set_apply_config(window: &Main) {
                         Err(msg) => {
                             rfd::MessageDialog::new()
                                 .set_title("Warning")
-                                .set_description(&msg.to_string())
+                                .set_description(msg.to_string())
                                 .show();
                             return;
                         }
@@ -104,7 +105,7 @@ fn set_apply_config(window: &Main) {
                     let (ip, netmask, gateway, dns) = infos.into_iter().collect_tuple().unwrap();
                     let address = ip
                         .into_iter()
-                        .zip(netmask.into_iter())
+                        .zip(netmask)
                         .map(|(item_ip, item_netmask)| Address {
                             ip: item_ip,
                             netmask: item_netmask,
@@ -115,7 +116,7 @@ fn set_apply_config(window: &Main) {
                     {
                         rfd::MessageDialog::new()
                             .set_title("Warning")
-                            .set_description(&err.to_string())
+                            .set_description(err.to_string())
                             .show();
                         return;
                     }
@@ -160,7 +161,7 @@ fn set_save_config(window: &Main, cfg: Arc<Mutex<MyConfig>>) {
                         Err(msg) => {
                             rfd::MessageDialog::new()
                                 .set_title("Warning")
-                                .set_description(&msg.to_string())
+                                .set_description(msg.to_string())
                                 .show();
                             return;
                         }
@@ -169,7 +170,7 @@ fn set_save_config(window: &Main, cfg: Arc<Mutex<MyConfig>>) {
                     let (ip, netmask, gateway, dns) = infos.into_iter().collect_tuple().unwrap();
                     let address = ip
                         .into_iter()
-                        .zip(netmask.into_iter())
+                        .zip(netmask)
                         .map(|(item_ip, item_netmask)| Address {
                             ip: item_ip,
                             netmask: item_netmask,
@@ -187,7 +188,7 @@ fn set_save_config(window: &Main, cfg: Arc<Mutex<MyConfig>>) {
                 }
             };
             if let Ok(nic) = nic {
-                if {
+                let is_saved = {
                     let mut cfg = cfg.lock().unwrap();
                     let is_saved = cfg.items.insert(nic);
                     if is_saved {
@@ -195,7 +196,8 @@ fn set_save_config(window: &Main, cfg: Arc<Mutex<MyConfig>>) {
                             .expect("Save to file saved_items.yml failed");
                     }
                     is_saved
-                } {
+                };
+                if is_saved {
                     load_saved_items(weak.clone(), cfg.clone());
                 }
             }
@@ -205,10 +207,7 @@ fn set_save_config(window: &Main, cfg: Arc<Mutex<MyConfig>>) {
 
 fn refresh_adapters(window: &Main) {
     let adapters = net_adapters::adapter::get_adapters();
-    let net_interfaces = adapters
-        .iter()
-        .map(|item| utils::convert(item))
-        .collect_vec();
+    let net_interfaces = adapters.iter().map(utils::convert).collect_vec();
     let the_model = Rc::new(VecModel::from(net_interfaces));
     let model = slint::ModelRc::from(the_model.clone());
     window
@@ -237,10 +236,7 @@ fn refresh_adapters(window: &Main) {
 
 fn load_saved_items(window: slint::Weak<Main>, cfg: Arc<Mutex<MyConfig>>) {
     let saved_items = cfg.lock().unwrap().items.get_list();
-    let net_interfaces = saved_items
-        .iter()
-        .map(|item| utils::convert(item))
-        .collect_vec();
+    let net_interfaces = saved_items.iter().map(utils::convert).collect_vec();
     let the_model = Rc::new(VecModel::from(net_interfaces));
     let model = slint::ModelRc::from(the_model.clone());
 

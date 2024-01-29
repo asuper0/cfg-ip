@@ -66,12 +66,7 @@ impl IpConfigList {
         let entry = self.inner.entry(nic.guid().to_string());
         match entry {
             std::collections::hash_map::Entry::Occupied(mut entry) => {
-                if entry
-                    .get_mut()
-                    .iter_mut()
-                    .find(|item| nic.eq(item))
-                    .is_none()
-                {
+                if !entry.get().iter().any(|item| nic.eq(item)) {
                     entry.get_mut().push(nic);
                     true
                 } else {
@@ -86,10 +81,6 @@ impl IpConfigList {
     }
 
     pub fn get_list(&self) -> Vec<Nic> {
-        self.inner
-            .values()
-            .flatten()
-            .map(|item| item.clone())
-            .collect_vec()
+        self.inner.values().flatten().cloned().collect_vec()
     }
 }

@@ -101,7 +101,7 @@ pub fn set_static_ip(
             "add",
             "address",
             &name_field,
-            &format!("gateway={}", format_ip_address(&gateway)),
+            &format!("gateway={}", format_ip_address(gateway)),
             "gwmetric=0",
         ]);
 
@@ -119,7 +119,7 @@ pub fn set_static_ip(
             "add",
             "dns",
             &name_field,
-            &format_ip_address(&dns),
+            &format_ip_address(dns),
         ]);
 
         cmd_set_dns.push(("dns", cmd));

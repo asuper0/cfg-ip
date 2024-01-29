@@ -26,27 +26,16 @@ pub fn create_model_vec<T>(items: Vec<T>) -> ModelRc<T>
 where
     T: 'static + Clone,
 {
-    // let the_model = Rc::new(VecModel::from(Vec::<T>::with_capacity(capacity)));
     let the_model = Rc::new(VecModel::from(items));
-    let model = slint::ModelRc::from(the_model);
-    model
+
+    slint::ModelRc::from(the_model)
 }
 
 pub fn convert(nic: &Nic) -> NetInterfaceItem {
     NetInterfaceItem {
-        address: create_model_vec(
-            nic.address()
-                .iter()
-                .map(|item| convert_address(item))
-                .collect_vec(),
-        ),
-        dns: create_model_vec(nic.dns().iter().map(|item| convert_ip(item)).collect_vec()),
-        gateway: create_model_vec(
-            nic.gateway()
-                .iter()
-                .map(|item| convert_ip(item))
-                .collect_vec(),
-        ),
+        address: create_model_vec(nic.address().iter().map(convert_address).collect_vec()),
+        dns: create_model_vec(nic.dns().iter().map(convert_ip).collect_vec()),
+        gateway: create_model_vec(nic.gateway().iter().map(convert_ip).collect_vec()),
         guid: nic.guid().into(),
         index: nic.index().unwrap() as i32,
         is_up: nic.is_up(),
@@ -62,8 +51,8 @@ pub fn convert(nic: &Nic) -> NetInterfaceItem {
 pub fn set_ui_checker(window: &Main) {
     window.global::<InterfaceItemCheck>().on_check_address({
         move |_net_address| {
-            Ipv4Addr::from_str(&_net_address.ip.ip.as_str()).is_ok()
-                && Ipv4Addr::from_str(&_net_address.netmask.ip.as_str()).is_ok()
+            Ipv4Addr::from_str(_net_address.ip.ip.as_str()).is_ok()
+                && Ipv4Addr::from_str(_net_address.netmask.ip.as_str()).is_ok()
         }
     });
 
