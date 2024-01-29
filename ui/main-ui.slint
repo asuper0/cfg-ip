@@ -1,6 +1,6 @@
 import { LineEdit , Button, CheckBox, VerticalBox, HorizontalBox, ListView, StandardListView, GridBox} from "std-widgets.slint";
 import { IpV4, NetAddress, NetInterfaceItem, InterfaceUiItem, InterfaceItemCheck, InterfaceEdit, NetItemUtils } from "interface-item.slint";
-
+import { PopMessageBox } from "pop-message.slint";
 export { InterfaceItemCheck, NetItemUtils }
 
 export global NetInterfaceStatus {
@@ -22,6 +22,12 @@ export component Main inherits Window {
         listview-system.set-current-item(index);
     }
 
+    public function show-message-box(title:string, text:string) {
+        message-box.title = title;
+        message-box.text = text;
+        message-box.visible = true;
+    }
+
     callback set-static(string, NetInterfaceItem);
     callback set-dynamic(string);
     callback refresh-adapters();
@@ -31,6 +37,10 @@ export component Main inherits Window {
     callback save-config(NetInterfaceItem, bool, [string]);
 
     title: "Config Ip Tool";
+
+    message-box := PopMessageBox{ 
+        // visible: false;
+    }
 
     HorizontalBox {
         VerticalBox {

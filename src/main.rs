@@ -73,18 +73,17 @@ fn set_remove_selected(window: &Main, cfg: Arc<Mutex<MyConfig>>) {
 
 fn set_apply_config(window: &Main) {
     window.on_apply_config({
-        |_item, _dhcp_on, _texts| {
-            let (tx, _rx) = std::sync::mpsc::channel();
-            match _dhcp_on {
-                true => {
-                    if let Err(err) = cfg_ip::set_ip::set_dynamic_ip(&_item.name, tx) {
-                        rfd::MessageDialog::new()
-                            .set_title("Warning")
-                            .set_description(err.to_string())
-                            .show();
+        let weak_window = window.as_weak();
+        move |_item, _dhcp_on, _texts| {
+            let window = weak_window.unwrap();
+            let _msg = match _dhcp_on {
+                true => match cfg_ip::set_ip::set_dynamic_ip(&_item.name) {
+                    Err(err) => {
+                        show_message_box(&window, "Warning", &err.to_string());
                         return;
                     }
-                }
+                    Ok(msg) => msg,
+                },
                 false => {
                     // _texts format： ip,netmask,gateway,dns
                     let texts = _texts
@@ -93,11 +92,8 @@ fn set_apply_config(window: &Main) {
                         .unwrap();
                     let infos = match cfg_ip::utils::convert_ip_items(texts) {
                         Ok(items) => items,
-                        Err(msg) => {
-                            rfd::MessageDialog::new()
-                                .set_title("Warning")
-                                .set_description(msg.to_string())
-                                .show();
+                        Err(err) => {
+                            show_message_box(&window, "Warning", &err.to_string());
                             return;
                         }
                     };
@@ -111,27 +107,20 @@ fn set_apply_config(window: &Main) {
                             netmask: item_netmask,
                         })
                         .collect_vec();
-                    if let Err(err) =
-                        cfg_ip::set_ip::set_static_ip(&_item.name, &address, &gateway, &dns, tx)
-                    {
-                        rfd::MessageDialog::new()
-                            .set_title("Warning")
-                            .set_description(err.to_string())
-                            .show();
-                        return;
+                    match cfg_ip::set_ip::set_static_ip(&_item.name, &address, &gateway, &dns) {
+                        Err(err) => {
+                            show_message_box(&window, "Warning", &err.to_string());
+                            return;
+                        }
+                        Ok(msg) => msg,
                     }
                 }
             };
 
-            #[allow(unused)]
-            while let Ok((line, desc, msg)) = _rx.recv() {
-                println!("cmd {desc}, line {line}, msg {msg}");
-            }
+            #[cfg(debug_assertions)]
+            println!("{}", _msg);
 
-            rfd::MessageDialog::new()
-                .set_title("Info")
-                .set_description("Config OK")
-                .show();
+            show_message_box(&window, "Info", "Config OK");
         }
     });
 }
@@ -140,6 +129,7 @@ fn set_save_config(window: &Main, cfg: Arc<Mutex<MyConfig>>) {
     window.on_save_config({
         let weak = window.as_weak();
         move |_item, _dhcp_on, _texts| {
+            let window = weak.unwrap();
             let nic = match _dhcp_on {
                 true => net_adapters::adapter::Nic::new(
                     &_item.name,
@@ -158,11 +148,8 @@ fn set_save_config(window: &Main, cfg: Arc<Mutex<MyConfig>>) {
                         .unwrap();
                     let infos = match cfg_ip::utils::convert_ip_items(texts) {
                         Ok(items) => items,
-                        Err(msg) => {
-                            rfd::MessageDialog::new()
-                                .set_title("Warning")
-                                .set_description(msg.to_string())
-                                .show();
+                        Err(err) => {
+                            show_message_box(&window, "Warning", &err.to_string());
                             return;
                         }
                     };
@@ -262,4 +249,8 @@ fn load_saved_items(window: slint::Weak<Main>, cfg: Arc<Mutex<MyConfig>>) {
     window
         .global::<NetInterfaceStatus>()
         .set_saved_names(list_model);
+}
+
+fn show_message_box(window: &Main, title: &str, text: &str) {
+    window.invoke_show_message_box(title.into(), text.into());
 }
