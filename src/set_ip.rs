@@ -1,10 +1,8 @@
-#[cfg(debug_assertions)]
 use encoding::{all::GB18030, DecoderTrap, Encoding};
-
 use std::io::Write;
 use std::process::{Command, Stdio};
 
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use net_adapters::adapter::Address;
 use std::net::IpAddr;
 
@@ -140,20 +138,21 @@ fn shell_batch(commands: Vec<String>) -> Result<String> {
 
     let mut stdin = child.stdin.take().expect("Failed to open stdin");
     for cmd in commands {
-        stdin.write_all(cmd.as_bytes())?;
+        let s = GB18030
+            .encode(&cmd, encoding::EncoderTrap::Strict)
+            .map_err(|err| anyhow!(err.to_string()))?;
+        stdin.write_all(&s[..])?;
         if !cmd.ends_with("\n") {
             stdin.write_all("\n".as_bytes())?;
         }
     }
+    stdin.write_all("pause\n".as_bytes())?;
     stdin.write_all("exit\n".as_bytes())?;
 
     let _output = child.wait_with_output()?;
-    #[cfg(debug_assertions)]
     let msg = GB18030
         .decode(&_output.stdout, DecoderTrap::Strict)
         .expect("format std output failed");
-    #[cfg(not(debug_assertions))]
-    let msg = "".to_string();
 
     Ok(msg)
 }
