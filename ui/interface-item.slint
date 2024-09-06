@@ -65,62 +65,41 @@ component IpItem {
         duration: 3s;
     }
 
-    // VerticalLayout {
-        // HorizontalLayout { 
-        //     Button { text: "valid";  clicked => { root.valid = !root.valid; }}
-        //     Button { text: "change"; clicked => {
-        //         if (root.state-sign) {
-        //             root.warning-state = 0;
-        //             root.state-sign = false;
-        //         } else {
-        //             root.warning-state = 1;
-        //             root.state-sign = true;
-        //         }
-        //     }}
+    HorizontalBox { 
+        alignment: stretch;
+        Text { text: root.name ; vertical-alignment: center; width: root.name-width; font-size: root.font-size;}
+        Rectangle {
+            le := LineEdit { 
+                text: root.ip.ip; 
+                x : 0;
+                width: 100%;
+                font-size: root.font-size;
+                read-only: root.read-only;
+                accepted(t) => { 
+                    check-ip({ip: t});
+                }
+            }
 
-        //     if root.valid : Text { text: "valid: true , state \{Math.round(root.warning-state *100)/100}";}
-        //     if !root.valid : Text { text: "valid: false , state \{Math.round(root.warning-state *100)/100}";}
-        // }
-        HorizontalBox { 
-            // padding-left: 8px;
-            // padding-right: 8px;
+            warning-format-text := Text { text: "format error!"; color: #CC5555AB; x : le.width - self.width - 10px; }
+            states [
+                normal when root.valid || (root.warning-state == 0 && root.state-sign ) || (root.warning-state== 1 && !root.state-sign): {
+                    warning-format-text.color : #CC555500;
+                }
+                warning when !root.valid && ((root.warning-state!= 0 && root.warning-state < 0.6 && root.state-sign)
+                    || (root.warning-state!= 1 && root.warning-state > 0.4 && !root.state-sign)) : {
+                    warning-format-text.color : #CC5555AB;
 
-            alignment: stretch;
-            Text { text: root.name ; vertical-alignment: center; width: root.name-width; font-size: root.font-size;}
-            Rectangle {
-                // horizontal-stretch: 1;
-                le := LineEdit { 
-                    text: root.ip.ip; 
-                    x : 0;
-                    width: 100%;
-                    font-size: root.font-size;
-                    read-only: root.read-only;
-                    accepted(t) => { 
-                        check-ip({ip: t});
+                    out {
+                        animate warning-format-text.color { duration: 1.5s;}
                     }
                 }
+                left when !root.valid && ((root.warning-state >= 0.6 && root.state-sign) || (root.warning-state<=0.4 && !root.state-sign)) : {
+                    warning-format-text.color : #CC555500;
+                }
+            ]
 
-                warning-format-text := Text { text: "format error!"; color: #CC5555AB; x : le.width - self.width - 10px; }
-                states [
-                    normal when root.valid || (root.warning-state == 0 && root.state-sign ) || (root.warning-state== 1 && !root.state-sign): {
-                        warning-format-text.color : #CC555500;
-                    }
-                    warning when !root.valid && ((root.warning-state!= 0 && root.warning-state < 0.6 && root.state-sign)
-                        || (root.warning-state!= 1 && root.warning-state > 0.4 && !root.state-sign)) : {
-                        warning-format-text.color : #CC5555AB;
-
-                        out {
-                            animate warning-format-text.color { duration: 1.5s;}
-                        }
-                    }
-                    left when !root.valid && ((root.warning-state >= 0.6 && root.state-sign) || (root.warning-state<=0.4 && !root.state-sign)) : {
-                        warning-format-text.color : #CC555500;
-                    }
-                ]
-
-            }
         }
-    // }
+    }
 }
 
 export component InterfaceUiItem inherits Rectangle{
@@ -143,7 +122,7 @@ export component InterfaceUiItem inherits Rectangle{
     
     Rectangle {
         border-color: gray;
-        border-width: 2px;
+        border-width: 1px;
         border-radius: 5px;
     }
 
@@ -174,7 +153,6 @@ export component InterfaceUiItem inherits Rectangle{
 
                 Rectangle {
                     HorizontalBox {
-                        // Text { text: "state"; width: root.name-width; vertical-alignment: center;}
                         Switch { text: "is up"; checked: value.is-up; }
                         Switch { text: "dhcp on"; checked: value.dhcp-on; }
                     }
@@ -182,32 +160,23 @@ export component InterfaceUiItem inherits Rectangle{
                 }
 
                 Rectangle {
-                    // Rectangle {
-                        border-color: gray;
-                        border-width: 2px;
-                        border-radius: 5px;
-                    // }
+                    border-color: gray;
+                    border-width: 1px;
+                    border-radius: 5px;
                     VerticalBox {
-                        // spacing: 10px;
-                        // padding: 6px;
                         Text { text: "address list";}
                         for item in  root.value.address: HorizontalBox {
                             IpItem {name: "ip"; ip: item.ip;}
                             IpItem {name: "netmask"; ip: item.netmask;}
                         }
                     }
-
                 }
 
                 Rectangle {
-                    // Rectangle {
-                        border-color: gray;
-                        border-width: 2px;
-                        border-radius: 5px;
-                    // }
+                    border-color: gray;
+                    border-width: 1px;
+                    border-radius: 5px;
                     VerticalBox {
-                        // padding: 6px;
-                        // spacing: 10px;
                         Text { text: "gateway list";}
                         for item in  root.value.gateway: HorizontalBox {
                             IpItem {name: "ip"; ip: item;}
@@ -216,14 +185,10 @@ export component InterfaceUiItem inherits Rectangle{
                 }
 
                 Rectangle {
-                    // Rectangle {
-                        border-color: gray;
-                        border-width: 2px;
-                        border-radius: 5px;
-                    // }
+                    border-color: gray;
+                    border-width: 1px;
+                    border-radius: 5px;
                     VerticalBox {
-                        // spacing: 10px;
-                        // padding: 6px;
                         Text { text: "dns list";}
                         for item in  root.value.dns: HorizontalBox {
                             IpItem {name: "ip"; ip: item;}
@@ -265,7 +230,7 @@ export component InterfaceEdit inherits Rectangle{
 
     Rectangle {
         border-color: gray;
-        border-width: 2px;
+        border-width: 1px;
         border-radius: 5px;
     }
 
@@ -312,7 +277,7 @@ export component InterfaceEdit inherits Rectangle{
                 ]
                 ui-address:= Rectangle {
                     border-color: gray;
-                    border-width: 2px;
+                    border-width: 1px;
                     border-radius: 5px;
 
                     VerticalBox {
@@ -329,11 +294,9 @@ export component InterfaceEdit inherits Rectangle{
                 }
 
                 ui-gateway := Rectangle {
-                    // Rectangle {
-                        border-color: gray;
-                        border-width: 2px;
-                        border-radius: 5px;
-                    // }
+                    border-color: gray;
+                    border-width: 1px;
+                    border-radius: 5px;
                     VerticalBox {
                         Text { text: "gateway list";}
                         te-gateway := TextEdit {}
@@ -341,11 +304,9 @@ export component InterfaceEdit inherits Rectangle{
                 }
 
                 ui-dns := Rectangle {
-                    // Rectangle {
-                        border-color: gray;
-                        border-width: 2px;
-                        border-radius: 5px;
-                    // }
+                    border-color: gray;
+                    border-width: 1px;
+                    border-radius: 5px;
                     VerticalBox {
                         Text { text: "dns list";}
                         te-dns := TextEdit {}

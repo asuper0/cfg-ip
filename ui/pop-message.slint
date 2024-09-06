@@ -1,8 +1,12 @@
 import {Button, VerticalBox} from "std-widgets.slint";
 
 export component PopMessageBox inherits Rectangle{
+    forward-focus: btn-ok;
     background: #20202080;
     visible: false;
+
+    in property <length> content-width: 300px;
+    in property <length> content-height: 160px;
 
     in property <string> title : "title";
     in property <string> text : "text";
@@ -13,8 +17,8 @@ export component PopMessageBox inherits Rectangle{
     // mask the whole window, to disable interacting
     TouchArea { z: 2;}
     Rectangle {
-        width: 300px;
-        height: 160px;
+        width: content-width;
+        height: content-height;
         x: (root.width - self.width) / 2 ;
         y: (root.height - self.height) / 2 ;
         z: 3;
@@ -30,15 +34,22 @@ export component PopMessageBox inherits Rectangle{
             y: 6px;
             height: parent.height - self.y * 2;
             z: 4;
-            Text { text: root.title; }
+            Text { text: root.title; font-size: 20px;}
             Rectangle { width: parent.width * 0.4; height: 1px; background: root.style-border-color; }
-            Text { vertical-stretch: 1; text: root.text; }
-            Rectangle { Button { 
-                text: "Ok";
-                x: (parent.width - self.width)/2 ;
-                width: 120px;
-                clicked => { root.visible = false; }
-            }}
+            Text { 
+                vertical-stretch: 1;
+                text: root.text;
+                wrap: TextWrap.word-wrap;
+                font-size: 16px;
+            }
+            Rectangle { 
+                btn-ok := Button { 
+                    text: "Ok";
+                    x: (parent.width - self.width)/2 ;
+                    width: 120px;
+                    clicked => { root.visible = false; }
+                }
+            }
         }
     }
 }

@@ -119,8 +119,6 @@ fn set_apply_config(window: &Main) {
 
             #[cfg(debug_assertions)]
             println!("{}", _msg);
-
-            show_message_box(&window, "Info", "Config OK");
         }
     });
 }

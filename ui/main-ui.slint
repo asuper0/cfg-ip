@@ -1,6 +1,7 @@
 import { LineEdit , Button, CheckBox, VerticalBox, HorizontalBox, ListView, StandardListView, GridBox} from "std-widgets.slint";
 import { IpV4, NetAddress, NetInterfaceItem, InterfaceUiItem, InterfaceItemCheck, InterfaceEdit, NetItemUtils } from "interface-item.slint";
 import { PopMessageBox } from "pop-message.slint";
+import { HelpInfo } from "help-info.slint";
 export { InterfaceItemCheck, NetItemUtils }
 
 export global NetInterfaceStatus {
@@ -26,7 +27,12 @@ export component Main inherits Window {
         message-box.title = title;
         message-box.text = text;
         message-box.visible = true;
+        message-box.focus();
+
+        message-box.content-width = 300px;
+        message-box.content-height = 160px;
     }
+
 
     callback set-static(string, NetInterfaceItem);
     callback set-dynamic(string);
@@ -38,36 +44,51 @@ export component Main inherits Window {
 
     title: "Config Ip Tool";
 
-    message-box := PopMessageBox{ 
-        // visible: false;
-    }
+    message-box := PopMessageBox{ }
 
     HorizontalBox {
-        VerticalBox {
-            Text {text: "Edit interface"; max-height: 20px;}
-            HorizontalBox {
-                Button {text: "Apply"; clicked => {
-                    apply-config(curr.value, curr.dhcp-on, curr.get-items());
-                }}
-                Button {text: "Save"; clicked => {
-                    save-config(curr.value, curr.dhcp-on, curr.get-items());
-                }}
-                Button {text: "Load selected"; clicked => {
-                    curr.select-item(show-setting.value);
-                }}
-            }
+        Rectangle {
+            border-width: 1px;
+            border-color: #666;
+            border-radius: 8px;
+            width: parent.width * 0.4;
 
-            curr := InterfaceEdit { }
+            VerticalBox {
+                HorizontalLayout {
+                    Text {text: "Edit interface"; max-height: 20px; vertical-alignment: center;}
+                    Rectangle { horizontal-stretch: 2;}
+                    Button {text: "Help"; clicked => {
+                        show-message-box("Help", help-info.content);
+                        message-box.content-width = 840px;
+                        message-box.content-height = 360px;
+                    }}
+                    help-info := HelpInfo{ width: 0; height: 0;}
+                }
+                HorizontalBox {
+                    Button {text: "Apply"; clicked => {
+                        apply-config(curr.value, curr.dhcp-on, curr.get-items());
+                    }}
+                    Button {text: "Save"; clicked => {
+                        save-config(curr.value, curr.dhcp-on, curr.get-items());
+                    }}
+                    Button {text: "Load selected"; clicked => {
+                        curr.select-item(show-setting.value);
+                    }}
+                }
+
+                curr := InterfaceEdit { }
+            }
         }
 
-        HorizontalBox {
-            max-width: parent.width * 0.6;
+        Rectangle {
+            border-width: 1px;
+            border-color: #666;
+            border-radius: 8px;
+
             GridBox {
                 Row {
                     Text {text: "Adapters"; max-height: 20px; vertical-alignment: center;}
                     Button {text: "Refresh"; clicked => { root.refresh-adapters(); }}
-                    Text {text: "Selected Item"; vertical-alignment: center;}
-                    le-selected-item := LineEdit { read-only: true; }
                 }
                 Row {
                     listview-system := StandardListView { 
@@ -113,14 +134,27 @@ export component Main inherits Window {
                     }
                 }
 
+            }
+            
+        }
+
+        Rectangle {
+            border-width: 1px;
+            border-color: #666;
+            border-radius: 8px;
+            width: parent.width * 0.4;
+
+            VerticalBox {
+                HorizontalBox {
+                    Text {text: "Selected Item"; vertical-alignment: center;}
+                    le-selected-item := LineEdit { read-only: true; }
+                }
+
                 show-setting := InterfaceUiItem { 
-                    row: 1;
-                    col: 2;
-                    rowspan: 4;
-                    colspan: 2;
                     read-only: true;
                 }
             }
+
         }
     }
 

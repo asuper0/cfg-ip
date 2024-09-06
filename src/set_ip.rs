@@ -133,7 +133,7 @@ pub fn set_static_ip(
 fn shell_batch(commands: Vec<String>) -> Result<String> {
     let mut child = Command::new("cmd.exe")
         .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
+        .stdout(Stdio::inherit())
         .spawn()?;
 
     let mut stdin = child.stdin.take().expect("Failed to open stdin");
@@ -146,8 +146,9 @@ fn shell_batch(commands: Vec<String>) -> Result<String> {
             stdin.write_all("\n".as_bytes())?;
         }
     }
-    stdin.write_all("pause\n".as_bytes())?;
-    stdin.write_all("exit\n".as_bytes())?;
+
+    stdin.write_all("echo \"You can close the window now.\"\n".as_bytes())?;
+    // stdin.write_all("exit\n".as_bytes())?;
 
     let _output = child.wait_with_output()?;
     let msg = GB18030
