@@ -1,3 +1,7 @@
+<img src="./MadeWithSlint-logo-whitebg.png" align="right" width="140px">
+
+# Cfg-IP
+
 A simple tool to config ip in windows, written in `Rust`. The UI is made by [Slint](https://github.com/slint-ui/slint)
 
 [中文文档](./README_zh.md)

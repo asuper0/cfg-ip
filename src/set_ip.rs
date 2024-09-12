@@ -142,7 +142,7 @@ fn shell_batch(commands: Vec<String>) -> Result<String> {
             .encode(&cmd, encoding::EncoderTrap::Strict)
             .map_err(|err| anyhow!(err.to_string()))?;
         stdin.write_all(&s[..])?;
-        if !cmd.ends_with("\n") {
+        if !cmd.ends_with('\n') {
             stdin.write_all("\n".as_bytes())?;
         }
     }

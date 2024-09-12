@@ -1,3 +1,7 @@
+<img src="./MadeWithSlint-logo-whitebg.png" align="right" width="140px">
+
+# Cfg-IP
+
 使用`Rust`编写的简单的Windows平台下IP配置工具。UI部分使用[Slint](https://github.com/slint-ui/slint)开发。
 
 ![config-ip-tool](https://github.com/asuper0/cfg-ip/assets/41113804/6f8b0a55-c187-44c2-af78-f270605f64f5)
