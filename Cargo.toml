@@ -1,6 +1,6 @@
 [package]
 name = "cfg-ip"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 authors = ["asuper"]
 build = "build.rs"
@@ -16,12 +16,12 @@ serde = "1.0.171"
 confy = { version = "0.5.1", default-features = false, features = [
     "yaml_conf",
 ] }
-slint = "1.4.0"
+slint = "1.8.0"
 itertools = "0.12.0"
 
 [build-dependencies]
 winres = "0.1.12"
-slint-build = "1.4.0"
+slint-build = "1.8.0"
 
 [profile.dev]
 opt-level = 1

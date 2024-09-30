@@ -17,6 +17,9 @@ const CONFIG_FILE: &str = "saved_items.yml";
 
 fn main() {
     let window = Main::new().unwrap();
+    let version = env!("CARGO_PKG_VERSION");
+    let title = window.get_window_title();
+    window.set_window_title(format!("{} v{}", title, version).into());
     let cfg: MyConfig = match confy::load_path(CONFIG_FILE) {
         Ok(cfg) => cfg,
         Err(_) => {

@@ -1,15 +1,31 @@
-import { LineEdit , Button, CheckBox, VerticalBox, HorizontalBox, ListView, StandardListView, GridBox} from "std-widgets.slint";
+import { LineEdit , Button, CheckBox, VerticalBox, HorizontalBox, ListView, StandardListView, GridBox, AboutSlint} from "std-widgets.slint";
 import { IpV4, NetAddress, NetInterfaceItem, InterfaceUiItem, InterfaceItemCheck, InterfaceEdit, NetItemUtils } from "interface-item.slint";
 import { PopMessageBox } from "pop-message.slint";
 import { HelpInfo } from "help-info.slint";
+import { Light } from "light.slint";
+import { CustomListView } from "listview.slint";
 export { InterfaceItemCheck, NetItemUtils }
 
 export global NetInterfaceStatus {
-    in-out property <[NetInterfaceItem]> interface-infos; 
+    in-out property <[NetInterfaceItem]> interface-infos: [
+        {name: "test1", is-up: true},
+        {name: "test2", is-up: false},
+        {name: "test3", is-up: true},
+        {name: "test4", is-up: false},
+        {name: "test5", is-up: true},
+        {name: "test6", is-up: false},
+    ]; 
     in-out property <[StandardListViewItem]> interface-names;
     in-out property <int> selected-index;
     in-out property <[NetInterfaceItem]> saved-settings; 
-    in-out property <[StandardListViewItem]> saved-names;
+    in-out property <[StandardListViewItem]> saved-names: [
+        {text: "test1" },
+        {text: "test2" },
+        {text: "test3" },
+        {text: "test4" },
+        {text: "test5" },
+        {text: "test6" },
+    ];
 }
 
 export component Main inherits Window {
@@ -20,7 +36,7 @@ export component Main inherits Window {
     out property <string> selected_guid;
 
     public function select-system(index:int) {
-        listview-system.set-current-item(index);
+        listview-system.select(index);
     }
 
     public function show-message-box(title:string, text:string) {
@@ -42,9 +58,8 @@ export component Main inherits Window {
     callback apply-config(NetInterfaceItem, bool, [string]);
     callback save-config(NetInterfaceItem, bool, [string]);
 
-    title: "Config Ip Tool";
-
-    message-box := PopMessageBox{ }
+    in property <string> window-title: "Config Ip Tool";
+    title: window-title;
 
     HorizontalBox {
         Rectangle {
@@ -55,6 +70,7 @@ export component Main inherits Window {
 
             VerticalBox {
                 HorizontalLayout {
+                    spacing: 6px;
                     Text {text: "Edit interface"; max-height: 20px; vertical-alignment: center;}
                     Rectangle { horizontal-stretch: 2;}
                     Button {text: "Help"; clicked => {
@@ -63,6 +79,7 @@ export component Main inherits Window {
                         message-box.content-height = 360px;
                     }}
                     help-info := HelpInfo{ width: 0; height: 0;}
+                    Button { text: "About Slint"; clicked => { about-box.visible = true; } }
                 }
                 HorizontalBox {
                     Button {text: "Apply"; clicked => {
@@ -91,16 +108,15 @@ export component Main inherits Window {
                     Button {text: "Refresh"; clicked => { root.refresh-adapters(); }}
                 }
                 Row {
-                    listview-system := StandardListView { 
+                    listview-system := CustomListView { 
                         colspan: 2;
-                        model: NetInterfaceStatus.interface-names;
-                        current-item-changed(index) => {
-                            if (index>=0 && index < NetInterfaceStatus.interface-infos.length) {
-                                show-setting.value = NetInterfaceStatus.interface-infos[index];
-                                root.select-system-adapter = true;
-                                root.selected-guid = show-setting.value.guid;
-                                le-selected-item.text = "Adapter : " + show-setting.value.name;
-                            }
+                        model: NetInterfaceStatus.interface-infos;
+
+                        selection-changed(index, item) => {
+                            show-setting.value = item;
+                            root.select-system-adapter = true;
+                            root.selected-guid = item.guid;
+                            le-selected-item.text = "Adapter : " + item.name;
                         }
                     }
                 }
@@ -158,5 +174,28 @@ export component Main inherits Window {
         }
     }
 
+    message-box := PopMessageBox{ }
+
+    about-box := Rectangle{
+        visible: false;
+        Rectangle {
+            width: 280px;
+            height: 180px;
+
+            y: (parent.height - self.height) / 2;
+            border-radius: 32px;
+            border-color: #333;
+            background: #888;
+
+            AboutSlint{
+
+            }
+        }
+        TouchArea {
+            clicked => {
+                parent.visible = false;
+            }
+        }
+    }
     
 }

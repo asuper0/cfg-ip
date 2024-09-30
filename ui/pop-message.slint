@@ -12,16 +12,14 @@ export component PopMessageBox inherits Rectangle{
     in property <string> text : "text";
     in property <color> style-border-color : #333;
 
-    z: 1;
-
     // mask the whole window, to disable interacting
-    TouchArea { z: 2;}
+    TouchArea { 
+    }
     Rectangle {
         width: content-width;
         height: content-height;
         x: (root.width - self.width) / 2 ;
         y: (root.height - self.height) / 2 ;
-        z: 3;
 
         border-color: root.style-border-color;
         border-width: 1px;
@@ -33,7 +31,6 @@ export component PopMessageBox inherits Rectangle{
             width: parent.width - self.x * 2;
             y: 6px;
             height: parent.height - self.y * 2;
-            z: 4;
             Text { text: root.title; font-size: 20px;}
             Rectangle { width: parent.width * 0.4; height: 1px; background: root.style-border-color; }
             Text { 

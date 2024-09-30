@@ -1,0 +1,30 @@
+export component Light inherits Rectangle {
+    in property <length> size: 24px;
+    in property <bool> enable;
+    property <length> spacing: 4px;
+
+    width: size;
+    height: size;
+    border-radius: self.width / 2;
+    border-width: 2px;
+
+    inner := Rectangle {
+        width: size - spacing * 2;
+        height: size - spacing * 2;
+        x: spacing;
+        y: spacing;
+
+        border-radius: self.width / 2;
+    }
+
+    states [
+        bule when enable : {
+            root.border-color: #208ae0;
+            inner.background: #208ae0;
+        }
+        gray when !enable : {
+            root.border-color: #777;
+            inner.background: transparent;
+        }
+    ]
+}

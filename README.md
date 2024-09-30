@@ -6,7 +6,7 @@ A simple tool to config ip in windows, written in `Rust`. The UI is made by [Sli
 
 [中文文档](./README_zh.md)
 
-![config-ip-tool](https://github.com/asuper0/cfg-ip/assets/41113804/6f8b0a55-c187-44c2-af78-f270605f64f5)
+![config-ip-tool](./screenshot.png)
 
 ## Usage
 

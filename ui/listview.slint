@@ -1,0 +1,104 @@
+import { ListView } from "std-widgets.slint";
+import { NetInterfaceItem } from "interface-item.slint";
+import { Light } from "light.slint";
+
+export component CustomListView inherits ListView {
+    in-out property <int> current-index: -1;
+    in property <length> spacing: 6px;
+    private property <int> into-view-item: 0;
+    private property <length> into-view-item-y: root.item-y(root.into-view-item);
+
+    padding: 6px;
+    property <length> item-height: 50px;
+
+    in property <[NetInterfaceItem]> model;
+
+    callback selection-changed(int, NetInterfaceItem);
+
+    public function select(index: int) {
+        if (index>=0 && index < model.length) {
+            current-index = index;
+            selection-changed(index, model[index]);
+            bring-into-view(index);
+        } else if index < 0 {
+            current-index = -1;
+        }
+    }
+
+    function bring-into-view(index: int) {
+        if (index < 0 || index >= model.length) {
+            return;
+        }
+
+        into-view-item = index;
+
+        if (into-view-item-y < 0) {
+            self.viewport-y += 0 - into-view-item-y;
+        }
+
+        if (into-view-item-y + item-height > self.visible-height) {
+            self.viewport-y -= into-view-item-y + item-height - self.visible-height;
+        }
+    }
+    pure function item-y(index: int) -> length {
+        return root.viewport-y + index * root.item-height;
+    }
+
+    for item[index] in model: Rectangle {
+        height: item-height;
+        property <bool> is-selected: index == current-index;
+
+        i-background := Rectangle {
+            y: spacing / 2;
+            height: parent.height - spacing;
+            width: parent.width - 6px;
+            border-radius: 4px;
+            background: #fafafa;
+
+            animate background {
+                duration: 300ms;
+            }
+
+            Text {
+                text: item.name;
+                vertical-alignment: center;
+                horizontal-alignment: left;
+                x: 20px; 
+                overflow: elide;
+            }
+
+            Light {
+                enable: item.is-up;
+                size: 20px;
+                x: parent.width - self.width - 12px;
+                y: (parent.height - self.height) / 2;
+            }
+
+            ta := TouchArea { clicked => { select(index); } }
+        }
+        i-selector := Rectangle {
+            x: 0px;
+            y: (parent.height - self.height) / 2;
+            width: 3px;
+            height: 0px;
+            background: #208ae0;
+            border-radius: 2px;
+
+            animate height { duration: 150ms; easing: ease-out; }
+        }
+
+        states [
+            pressed when ta.pressed : {
+                i-background.background: is-selected ? #f0f0f0: #f5f5f5;
+            }
+            hover when ta.has-hover : {
+                i-background.background: is-selected ? #f5f5f5 : #f0f0f0;
+                i-selector.height: is-selected ? 16px : 0;
+            }
+            is-selected when is-selected : {
+                i-background.background: #f0f0f0;
+                i-selector.height: 16px;
+            }
+        ]
+    }
+}
