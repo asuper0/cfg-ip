@@ -137,16 +137,19 @@ export component InterfaceUiItem inherits Rectangle{
             content := VerticalBox {
 
                 HorizontalBox {
+                    padding-right: 0;
                     Text { text: "index"; width: root.name-width; vertical-alignment: center;}
                     LineEdit { text: value.index; read-only: root.read-only;}
                 }
 
                 HorizontalBox {
+                    padding-right: 0;
                     Text { text: "guid"; width: root.name-width; vertical-alignment: center;}
                     LineEdit { text: value.guid; read-only: root.read-only;}
                 }
 
                 HorizontalBox {
+                    padding-right: 0;
                     Text { text: "name"; width: root.name-width; vertical-alignment: center;}
                     LineEdit { text: value.name; read-only: root.read-only; accepted => { root.collapsed = true; }}
                 }
@@ -166,6 +169,8 @@ export component InterfaceUiItem inherits Rectangle{
                     VerticalBox {
                         Text { text: "address list";}
                         for item in  root.value.address: HorizontalBox {
+                            padding-right: 0;
+                            padding-left: 0;
                             IpItem {name: "ip"; ip: item.ip;}
                             IpItem {name: "netmask"; ip: item.netmask;}
                         }
@@ -178,8 +183,9 @@ export component InterfaceUiItem inherits Rectangle{
                     border-radius: 5px;
                     VerticalBox {
                         Text { text: "gateway list";}
-                        for item in  root.value.gateway: HorizontalBox {
-                            IpItem {name: "ip"; ip: item;}
+                        for item in  root.value.gateway: IpItem {
+                            name: "ip";
+                            ip: item;
                         }
                     }
                 }
@@ -190,8 +196,9 @@ export component InterfaceUiItem inherits Rectangle{
                     border-radius: 5px;
                     VerticalBox {
                         Text { text: "dns list";}
-                        for item in  root.value.dns: HorizontalBox {
-                            IpItem {name: "ip"; ip: item;}
+                        for item in  root.value.dns: IpItem {
+                            name: "ip";
+                            ip: item;
                         }
                     }
                 }
@@ -241,16 +248,19 @@ export component InterfaceEdit inherits Rectangle{
             VerticalBox {
 
                 HorizontalBox {
+                    padding-right: 0;
                     Text { text: "index"; width: root.name-width; vertical-alignment: center;}
                     LineEdit { text: value.index; read-only: true; }
                 }
 
                 HorizontalBox {
+                    padding-right: 0;
                     Text { text: "guid"; width: root.name-width; vertical-alignment: center;}
                     LineEdit { text: value.guid;  read-only: true;}
                 }
 
                 HorizontalBox {
+                    padding-right: 0;
                     Text { text: "name"; width: root.name-width; vertical-alignment: center;}
                     LineEdit { text: value.name;  read-only: true;}
                 }
@@ -258,6 +268,7 @@ export component InterfaceEdit inherits Rectangle{
                 Rectangle {
                     HorizontalBox {
                         sw-dhcp := Switch { text: "dhcp on"; }
+                        Rectangle {}
                     }
                 }
 
@@ -279,10 +290,13 @@ export component InterfaceEdit inherits Rectangle{
                     border-color: gray;
                     border-width: 1px;
                     border-radius: 5px;
+                    vertical-stretch: 1;
 
                     VerticalBox {
+                        spacing: 0;
                         Text { text: "address list";}
                         HorizontalBox {
+                            padding: 0;
                             min-height: 64px;
                             Text {text: "ip";}
                             te-ip := TextEdit {}
