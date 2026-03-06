@@ -66,29 +66,30 @@ export component Main inherits Window {
             border-width: 1px;
             border-color: #666;
             border-radius: 8px;
-            width: parent.width * 0.4;
+            // width: parent.width * 0.4;
+            horizontal-stretch: 4;
 
             VerticalBox {
                 HorizontalLayout {
                     spacing: 6px;
-                    Text {text: "Edit interface"; max-height: 20px; vertical-alignment: center;}
+                    Text {text: @tr("Edit interface"); max-height: 20px; vertical-alignment: center;}
                     Rectangle { horizontal-stretch: 2;}
-                    Button {text: "Help"; clicked => {
-                        show-message-box("Help", help-info.content);
+                    Button {text: @tr("Help"); clicked => {
+                        show-message-box(@tr("Help"), help-info.content);
                         message-box.content-width = 840px;
                         message-box.content-height = 360px;
                     }}
                     help-info := HelpInfo{ width: 0; height: 0;}
-                    Button { text: "About Slint"; clicked => { about-box.visible = true; } }
+                    Button { text: @tr("About Slint"); clicked => { about-box.visible = true; } }
                 }
                 HorizontalBox {
-                    Button {text: "Apply"; clicked => {
+                    Button {text: @tr("Apply"); clicked => {
                         apply-config(curr.value, curr.dhcp-on, curr.get-items());
                     }}
-                    Button {text: "Save"; clicked => {
+                    Button {text: @tr("Save"); clicked => {
                         save-config(curr.value, curr.dhcp-on, curr.get-items());
                     }}
-                    Button {text: "Load selected"; clicked => {
+                    Button {text: @tr("Load selected"); clicked => {
                         curr.select-item(show-setting.value);
                     }}
                 }
@@ -101,11 +102,12 @@ export component Main inherits Window {
             border-width: 1px;
             border-color: #666;
             border-radius: 8px;
+            horizontal-stretch: 1;
 
             GridBox {
                 Row {
-                    Text {text: "Adapters"; max-height: 20px; vertical-alignment: center;}
-                    Button {text: "Refresh"; clicked => { root.refresh-adapters(); }}
+                    Text {text: @tr("Adapters"); max-height: 20px; vertical-alignment: center;}
+                    Button {text: @tr("Refresh"); clicked => { root.refresh-adapters(); }}
                 }
                 Row {
                     listview-system := CustomListView { 
@@ -116,7 +118,7 @@ export component Main inherits Window {
                             show-setting.value = item;
                             root.select-system-adapter = true;
                             root.selected-guid = item.guid;
-                            le-selected-item.text = "Adapter : " + item.name;
+                            le-selected-item.text = @tr("Adapter : ") + item.name;
                         }
                     }
                 }
@@ -128,8 +130,8 @@ export component Main inherits Window {
                     }
                 }
                 Row {
-                    Text {text: "Saved settings"; max-height: 20px; vertical-alignment: center;}
-                    Button {text: "Remove"; clicked => {
+                    Text {text: @tr("Saved settings"); max-height: 20px; vertical-alignment: center;}
+                    Button {text: @tr("Remove"); clicked => {
                         if (listview-saved.current-item >= 0) {
                             root.remove-selected(listview-saved.current-item);
                         }
@@ -144,7 +146,7 @@ export component Main inherits Window {
                                 show-setting.value = NetInterfaceStatus.saved-settings[index];
                                 root.select-system-adapter = false;
                                 root.selected-guid = show-setting.value.guid;
-                                le-selected-item.text = "Saved : " + show-setting.value.name;
+                                le-selected-item.text = @tr("Saved : ") + show-setting.value.name;
                             }
                         }
                     }
@@ -158,11 +160,12 @@ export component Main inherits Window {
             border-width: 1px;
             border-color: #666;
             border-radius: 8px;
-            width: parent.width * 0.4;
+            // width: parent.width * 0.4;
+            horizontal-stretch: 4;
 
             VerticalBox {
                 HorizontalBox {
-                    Text {text: "Selected Item"; vertical-alignment: center;}
+                    Text {text: @tr("Selected Item"); vertical-alignment: center;}
                     le-selected-item := LineEdit { read-only: true; }
                 }
 
@@ -197,5 +200,4 @@ export component Main inherits Window {
             }
         }
     }
-    
 }

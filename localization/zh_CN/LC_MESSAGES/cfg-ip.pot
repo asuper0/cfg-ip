@@ -1,0 +1,214 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2026-03-06 07:52+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#: ui/help-info.slint:3
+msgctxt "HelpInfo"
+msgid ""
+"1. When you run the app, the system current adapters are loaded to the list "
+"in \"Adapters\", or you can click \"Refresh\" to reload.\n"
+msgstr ""
+
+#: ui/help-info.slint:4
+msgctxt "HelpInfo"
+msgid "2. Choose one of the adapters to see details.\n"
+msgstr ""
+
+#: ui/help-info.slint:5
+msgctxt "HelpInfo"
+msgid ""
+"3. Select one in step 2, then click \"Load selected\". The adapter info is "
+"loaded to the left area.\n"
+msgstr ""
+
+#: ui/help-info.slint:6
+msgctxt "HelpInfo"
+msgid ""
+"4. Do some change in the left area, click \"Apply\" or \"Save\" when you "
+"finished, or \"Load selected\" to discard the changes.\n"
+msgstr ""
+
+#: ui/help-info.slint:7
+msgctxt "HelpInfo"
+msgid ""
+"     1) The app support multiple IP when \"DHCP on\" is unchecked. Each line "
+"represent one address. Please fill the \"IP\" and \"netmask\" list with same "
+"count, while each IP must match a netmask.\n"
+msgstr ""
+
+#: ui/help-info.slint:8
+msgctxt "HelpInfo"
+msgid "     2) \"gateway\" and \"DNS list\" also support multiple address.\n"
+msgstr ""
+
+#: ui/help-info.slint:10
+msgctxt "HelpInfo"
+msgid ""
+"If you saved some items in step 4, then you can choose and select them, like "
+"step 2 & 3."
+msgstr ""
+
+#: ui/interface-item.slint:83
+msgctxt "IpItem"
+msgid "format error!"
+msgstr ""
+
+#: ui/interface-item.slint:134 ui/interface-item.slint:153
+msgctxt "InterfaceUiItem"
+msgid "name"
+msgstr ""
+
+#: ui/interface-item.slint:141
+msgctxt "InterfaceUiItem"
+msgid "index"
+msgstr ""
+
+#: ui/interface-item.slint:159
+msgctxt "InterfaceUiItem"
+msgid "is up"
+msgstr ""
+
+#: ui/interface-item.slint:160
+msgctxt "InterfaceUiItem"
+msgid "DHCP on"
+msgstr ""
+
+#: ui/interface-item.slint:170
+msgctxt "InterfaceUiItem"
+msgid "address list"
+msgstr ""
+
+#: ui/interface-item.slint:174
+msgctxt "InterfaceUiItem"
+msgid "IP"
+msgstr ""
+
+#: ui/interface-item.slint:175
+msgctxt "InterfaceUiItem"
+msgid "netmask"
+msgstr ""
+
+#: ui/interface-item.slint:185
+msgctxt "InterfaceUiItem"
+msgid "gateway list"
+msgstr ""
+
+#: ui/interface-item.slint:198
+msgctxt "InterfaceUiItem"
+msgid "DNS list"
+msgstr ""
+
+#: ui/interface-item.slint:252
+msgctxt "InterfaceEdit"
+msgid "index"
+msgstr ""
+
+#: ui/interface-item.slint:264
+msgctxt "InterfaceEdit"
+msgid "name"
+msgstr ""
+
+#: ui/interface-item.slint:270
+msgctxt "InterfaceEdit"
+msgid "DHCP on"
+msgstr ""
+
+#: ui/interface-item.slint:297
+msgctxt "InterfaceEdit"
+msgid "address list"
+msgstr ""
+
+#: ui/interface-item.slint:303
+msgctxt "InterfaceEdit"
+msgid "netmask"
+msgstr ""
+
+#: ui/interface-item.slint:315
+msgctxt "InterfaceEdit"
+msgid "gateway list"
+msgstr ""
+
+#: ui/interface-item.slint:325
+msgctxt "InterfaceEdit"
+msgid "DNS list"
+msgstr ""
+
+#: ui/main-ui.slint:74
+msgctxt "Main"
+msgid "Edit interface"
+msgstr ""
+
+#: ui/main-ui.slint:76 ui/main-ui.slint:77
+msgctxt "Main"
+msgid "Help"
+msgstr ""
+
+#: ui/main-ui.slint:82
+msgctxt "Main"
+msgid "About Slint"
+msgstr ""
+
+#: ui/main-ui.slint:85
+msgctxt "Main"
+msgid "Apply"
+msgstr ""
+
+#: ui/main-ui.slint:88
+msgctxt "Main"
+msgid "Save"
+msgstr ""
+
+#: ui/main-ui.slint:91
+msgctxt "Main"
+msgid "Load selected"
+msgstr ""
+
+#: ui/main-ui.slint:107
+msgctxt "Main"
+msgid "Adapters"
+msgstr ""
+
+#: ui/main-ui.slint:108
+msgctxt "Main"
+msgid "Refresh"
+msgstr ""
+
+#: ui/main-ui.slint:119
+msgctxt "Main"
+msgid "Adapter : "
+msgstr ""
+
+#: ui/main-ui.slint:131
+msgctxt "Main"
+msgid "Saved settings"
+msgstr ""
+
+#: ui/main-ui.slint:132
+msgctxt "Main"
+msgid "Remove"
+msgstr ""
+
+#: ui/main-ui.slint:147
+msgctxt "Main"
+msgid "Saved : "
+msgstr ""
+
+#: ui/main-ui.slint:165
+msgctxt "Main"
+msgid "Selected Item"
+msgstr ""
+
+#: ui/pop-message.slint:44
+msgctxt "PopMessageBox"
+msgid "Ok"
+msgstr ""

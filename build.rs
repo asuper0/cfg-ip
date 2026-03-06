@@ -29,5 +29,10 @@ fn main() {
     #[cfg(target_os = "windows")]
     require_admin();
 
-    slint_build::compile("ui/main-ui.slint").unwrap();
+    println!("cargo:rerun-if-changed=./localization/zh_CN/LC_MESSAGES/cfg-ip.po");
+
+    let config =
+        slint_build::CompilerConfiguration::new().with_bundled_translations("./localization");
+    slint_build::compile_with_config("ui/main-ui.slint", config).unwrap();
+    // slint_build::compile("ui/main-ui.slint").unwrap();
 }

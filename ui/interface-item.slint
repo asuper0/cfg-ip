@@ -80,7 +80,7 @@ component IpItem {
                 }
             }
 
-            warning-format-text := Text { text: "format error!"; color: #CC5555AB; x : le.width - self.width - 10px; }
+            warning-format-text := Text { text: @tr("format error!"); color: #CC5555AB; x : le.width - self.width - 10px; }
             states [
                 normal when root.valid || (root.warning-state == 0 && root.state-sign ) || (root.warning-state== 1 && !root.state-sign): {
                     warning-format-text.color : #CC555500;
@@ -131,14 +131,14 @@ export component InterfaceUiItem inherits Rectangle{
 
         ScrollView {
             mini-name := HorizontalBox {
-                Text { text: "name"; width: root.name-width; vertical-alignment: center;}
+                Text { text: @tr("name"); width: root.name-width; vertical-alignment: center;}
                 LineEdit { text: value.name; read-only: root.read-only; accepted => { root.collapsed = false;}}
             }
             content := VerticalBox {
 
                 HorizontalBox {
                     padding-right: 0;
-                    Text { text: "index"; width: root.name-width; vertical-alignment: center;}
+                    Text { text: @tr("index"); width: root.name-width; vertical-alignment: center;}
                     LineEdit { text: value.index; read-only: root.read-only;}
                 }
 
@@ -150,14 +150,14 @@ export component InterfaceUiItem inherits Rectangle{
 
                 HorizontalBox {
                     padding-right: 0;
-                    Text { text: "name"; width: root.name-width; vertical-alignment: center;}
+                    Text { text: @tr("name"); width: root.name-width; vertical-alignment: center;}
                     LineEdit { text: value.name; read-only: root.read-only; accepted => { root.collapsed = true; }}
                 }
 
                 Rectangle {
                     HorizontalBox {
-                        Switch { text: "is up"; checked: value.is-up; }
-                        Switch { text: "dhcp on"; checked: value.dhcp-on; }
+                        Switch { text: @tr("is up"); checked: value.is-up; }
+                        Switch { text: @tr("DHCP on"); checked: value.dhcp-on; }
                     }
                     if read-only : TouchArea{}
                 }
@@ -167,12 +167,12 @@ export component InterfaceUiItem inherits Rectangle{
                     border-width: 1px;
                     border-radius: 5px;
                     VerticalBox {
-                        Text { text: "address list";}
+                        Text { text: @tr("address list");}
                         for item in  root.value.address: HorizontalBox {
                             padding-right: 0;
                             padding-left: 0;
-                            IpItem {name: "ip"; ip: item.ip;}
-                            IpItem {name: "netmask"; ip: item.netmask;}
+                            IpItem {name: @tr("IP"); ip: item.ip;}
+                            IpItem {name: @tr("netmask"); ip: item.netmask;}
                         }
                     }
                 }
@@ -182,9 +182,9 @@ export component InterfaceUiItem inherits Rectangle{
                     border-width: 1px;
                     border-radius: 5px;
                     VerticalBox {
-                        Text { text: "gateway list";}
+                        Text { text: @tr("gateway list");}
                         for item in  root.value.gateway: IpItem {
-                            name: "ip";
+                            name: "IP";
                             ip: item;
                         }
                     }
@@ -195,9 +195,9 @@ export component InterfaceUiItem inherits Rectangle{
                     border-width: 1px;
                     border-radius: 5px;
                     VerticalBox {
-                        Text { text: "dns list";}
+                        Text { text: @tr("DNS list");}
                         for item in  root.value.dns: IpItem {
-                            name: "ip";
+                            name: "IP";
                             ip: item;
                         }
                     }
@@ -249,7 +249,7 @@ export component InterfaceEdit inherits Rectangle{
 
                 HorizontalBox {
                     padding-right: 0;
-                    Text { text: "index"; width: root.name-width; vertical-alignment: center;}
+                    Text { text: @tr("index"); width: root.name-width; vertical-alignment: center;}
                     LineEdit { text: value.index; read-only: true; }
                 }
 
@@ -261,13 +261,13 @@ export component InterfaceEdit inherits Rectangle{
 
                 HorizontalBox {
                     padding-right: 0;
-                    Text { text: "name"; width: root.name-width; vertical-alignment: center;}
+                    Text { text: @tr("name"); width: root.name-width; vertical-alignment: center;}
                     LineEdit { text: value.name;  read-only: true;}
                 }
 
                 Rectangle {
                     HorizontalBox {
-                        sw-dhcp := Switch { text: "dhcp on"; }
+                        sw-dhcp := Switch { text: @tr("DHCP on"); }
                         Rectangle {}
                     }
                 }
@@ -294,13 +294,13 @@ export component InterfaceEdit inherits Rectangle{
 
                     VerticalBox {
                         spacing: 0;
-                        Text { text: "address list";}
+                        Text { text: @tr("address list");}
                         HorizontalBox {
                             padding: 0;
                             min-height: 64px;
-                            Text {text: "ip";}
+                            Text {text: "IP";}
                             te-ip := TextEdit {}
-                            Text {text: "netmask";}
+                            Text {text: @tr("netmask");}
                             te-netmask := TextEdit {}
                         }
                     }
@@ -312,7 +312,7 @@ export component InterfaceEdit inherits Rectangle{
                     border-width: 1px;
                     border-radius: 5px;
                     VerticalBox {
-                        Text { text: "gateway list";}
+                        Text { text: @tr("gateway list");}
                         te-gateway := TextEdit {}
                     }
                 }
@@ -322,7 +322,7 @@ export component InterfaceEdit inherits Rectangle{
                     border-width: 1px;
                     border-radius: 5px;
                     VerticalBox {
-                        Text { text: "dns list";}
+                        Text { text: @tr("DNS list");}
                         te-dns := TextEdit {}
                     }
                 }

@@ -1,0 +1,238 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2026-03-06 07:52+0000\n"
+"PO-Revision-Date: 2026-03-06 15:57+0800\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.6\n"
+
+#: ui/help-info.slint:3
+msgctxt "HelpInfo"
+msgid ""
+"1. When you run the app, the system current adapters are loaded to the list "
+"in \"Adapters\", or you can click \"Refresh\" to reload.\n"
+msgstr ""
+"1. 当打开App时，系统当前的网络适配器会自动加载到中间的\"适配器\"区域，你也可"
+"以点击\"刷新\"按钮来手动刷新。\n"
+
+#: ui/help-info.slint:4
+msgctxt "HelpInfo"
+msgid "2. Choose one of the adapters to see details.\n"
+msgstr "2. 选择一个网络适配器，在右侧区域可以看到详细信息。\n"
+
+#: ui/help-info.slint:5
+msgctxt "HelpInfo"
+msgid ""
+"3. Select one in step 2, then click \"Load selected\". The adapter info is "
+"loaded to the left area.\n"
+msgstr ""
+"3. 在步骤2. 中选择一项，然后点击\"加载选中项\"按钮，适配器信息会加载到左侧区"
+"域。\n"
+
+#: ui/help-info.slint:6
+msgctxt "HelpInfo"
+msgid ""
+"4. Do some change in the left area, click \"Apply\" or \"Save\" when you "
+"finished, or \"Load selected\" to discard the changes.\n"
+msgstr ""
+"4. 在左侧区域中按照你的需要进行修改，可以点击\"应用\"按钮来使其生效，或点击"
+"\"保存\"按钮来保存，也可以点击\"加载选中项\"按钮放弃更改。\n"
+
+#: ui/help-info.slint:7
+msgctxt "HelpInfo"
+msgid ""
+"     1) The app support multiple IP when \"DHCP on\" is unchecked. Each line "
+"represent one address. Please fill the \"IP\" and \"netmask\" list with same "
+"count, while each IP must match a netmask.\n"
+msgstr ""
+"   1) 当\"启用DHCP\"未选中时，可以对一个适配器配置多个IP。\"地址清单\"中的每"
+"一行代表一个地址，IP地址和子网掩码必须是一一配对的，所以\"地址清单\"和\"子网"
+"掩码\"中的行数必须保持一致；\n"
+
+#: ui/help-info.slint:8
+msgctxt "HelpInfo"
+msgid "     2) \"gateway\" and \"DNS list\" also support multiple address.\n"
+msgstr "   2) \"网关\" 和 \"DNS列表\" 同样支持配置多个。\n"
+
+#: ui/help-info.slint:10
+msgctxt "HelpInfo"
+msgid ""
+"If you saved some items in step 4, then you can choose and select them, like "
+"step 2 & 3."
+msgstr ""
+"如果你在步骤4. 中保存了一些配置，你可以在\"已保存参数\"区域中选择它们，并执行"
+"类似步骤2. 和步骤3. 的操作。"
+
+#: ui/interface-item.slint:83
+msgctxt "IpItem"
+msgid "format error!"
+msgstr "格式错误!"
+
+#: ui/interface-item.slint:134 ui/interface-item.slint:153
+msgctxt "InterfaceUiItem"
+msgid "name"
+msgstr "名称"
+
+#: ui/interface-item.slint:141
+msgctxt "InterfaceUiItem"
+msgid "index"
+msgstr "序号"
+
+#: ui/interface-item.slint:159
+msgctxt "InterfaceUiItem"
+msgid "is up"
+msgstr "已连接"
+
+#: ui/interface-item.slint:160
+msgctxt "InterfaceUiItem"
+msgid "DHCP on"
+msgstr "启用DHCP"
+
+#: ui/interface-item.slint:170
+msgctxt "InterfaceUiItem"
+msgid "address list"
+msgstr "地址清单"
+
+#: ui/interface-item.slint:174
+msgctxt "InterfaceUiItem"
+msgid "IP"
+msgstr "IP"
+
+#: ui/interface-item.slint:175
+msgctxt "InterfaceUiItem"
+msgid "netmask"
+msgstr "子网掩码"
+
+#: ui/interface-item.slint:185
+msgctxt "InterfaceUiItem"
+msgid "gateway list"
+msgstr "网关清单"
+
+#: ui/interface-item.slint:198
+msgctxt "InterfaceUiItem"
+msgid "DNS list"
+msgstr "DNS清单"
+
+#: ui/interface-item.slint:252
+msgctxt "InterfaceEdit"
+msgid "index"
+msgstr "序号"
+
+#: ui/interface-item.slint:264
+msgctxt "InterfaceEdit"
+msgid "name"
+msgstr "名称"
+
+#: ui/interface-item.slint:270
+msgctxt "InterfaceEdit"
+msgid "DHCP on"
+msgstr "启用DHCP"
+
+#: ui/interface-item.slint:297
+msgctxt "InterfaceEdit"
+msgid "address list"
+msgstr "地址清单"
+
+#: ui/interface-item.slint:303
+msgctxt "InterfaceEdit"
+msgid "netmask"
+msgstr "子网掩码"
+
+#: ui/interface-item.slint:315
+msgctxt "InterfaceEdit"
+msgid "gateway list"
+msgstr "网关清单"
+
+#: ui/interface-item.slint:325
+msgctxt "InterfaceEdit"
+msgid "DNS list"
+msgstr "DNS清单"
+
+#: ui/main-ui.slint:74
+msgctxt "Main"
+msgid "Edit interface"
+msgstr "编辑接口"
+
+#: ui/main-ui.slint:76 ui/main-ui.slint:77
+msgctxt "Main"
+msgid "Help"
+msgstr "帮助"
+
+#: ui/main-ui.slint:82
+msgctxt "Main"
+msgid "About Slint"
+msgstr "关于Slint"
+
+#: ui/main-ui.slint:85
+msgctxt "Main"
+msgid "Apply"
+msgstr "应用"
+
+#: ui/main-ui.slint:88
+msgctxt "Main"
+msgid "Save"
+msgstr "保存本地"
+
+#: ui/main-ui.slint:91
+msgctxt "Main"
+msgid "Load selected"
+msgstr "加载选中项"
+
+#: ui/main-ui.slint:107
+msgctxt "Main"
+msgid "Adapters"
+msgstr "适配器"
+
+#: ui/main-ui.slint:108
+msgctxt "Main"
+msgid "Refresh"
+msgstr "刷新"
+
+#: ui/main-ui.slint:119
+msgctxt "Main"
+msgid "Adapter : "
+msgstr "适配器 : "
+
+#: ui/main-ui.slint:131
+msgctxt "Main"
+msgid "Saved settings"
+msgstr "已保存参数"
+
+#: ui/main-ui.slint:132
+msgctxt "Main"
+msgid "Remove"
+msgstr "删除"
+
+#: ui/main-ui.slint:147
+msgctxt "Main"
+msgid "Saved : "
+msgstr "已保存的 : "
+
+#: ui/main-ui.slint:165
+msgctxt "Main"
+msgid "Selected Item"
+msgstr "选中项"
+
+#: ui/pop-message.slint:44
+msgctxt "PopMessageBox"
+msgid "Ok"
+msgstr "确定"
+
+#~ msgctxt "InterfaceUiItem"
+#~ msgid "dhcp on"
+#~ msgstr "启用dhcp"
+
+#~ msgctxt "InterfaceUiItem"
+#~ msgid "ip"
+#~ msgstr "Ip"
+
+#~ msgctxt "InterfaceEdit"
+#~ msgid "dhcp on"
+#~ msgstr "启用dhcp"

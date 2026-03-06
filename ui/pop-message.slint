@@ -41,7 +41,7 @@ export component PopMessageBox inherits Rectangle{
             }
             Rectangle { 
                 btn-ok := Button { 
-                    text: "Ok";
+                    text: @tr("Ok");
                     x: (parent.width - self.width)/2 ;
                     width: 120px;
                     clicked => { root.visible = false; }
